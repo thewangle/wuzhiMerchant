@@ -2,47 +2,45 @@
   <div class="loginWrap" @scroll="handleFilterScrloo">
     <div class="vanNavBar">
       <div class="vanNavBarLeft" @click="$router.go(-1)"><img src="../../assets/img/back.png" alt=""> <span>返回</span></div>
-      <div class="vanNavBarCenter" style="color:black;">供应商列表</div>
+      <div class="vanNavBarCenter" style="color:black;">账号列表</div>
       <div class="vanNavBarRight"></div>
     </div>
     <div class="sortContentWrpa">
       <div class="subWrapGoodslist">
         <div style="font-size:17px;">条件筛选</div>
         <div>
-          <el-input v-model="listQuery.name" placeholder="请输入供应商名称" @keyup.enter.native="handleFilter"/>
+          <el-input v-model="listQuery.username" placeholder="请输入用户名" @keyup.enter.native="handleFilter"/>
         </div>
-        <div>
-          <el-input v-model="listQuery.phone" placeholder="请输入供应商手机号" @keyup.enter.native="handleFilter"/>
-        </div>
-        <div>
+        <div class="subWrap">
           <el-button type="success" icon="el-icon-search" @click="handleFilter" style="margin-top:10px;">查询</el-button>
+          <el-button style="margin-top:10px;" class="filter-item" type="primary" icon="el-icon-edit" @click="adduser()">添加账号</el-button>
         </div>
       </div>
       <div class="sortListWrap" v-for="(item,index) in sortList">
         <div class="sortListB">
           <div class="goodsList">
-            <div class="biao">供应商：
-              <span class="sortListSp yellow">{{ item.name }}</span>
+            <div class="biao">用户名：
+              <span class="sortListSp yellow">{{ item.username }}</span>
             </div>
             <div>电话：
-              <span class="sortListSp blue">{{ item.phone }}</span>
+              <span class="sortListSp red">{{ item.phone }}</span>
             </div>
-            <div>联系人：
-              <span class="sortListSp red">{{ item.contact }}</span>
+            <div>账号名称：
+              <span class="sortListSp blue">{{ item.department }}</span>
             </div>
           </div>
-          <div class="myBtn" @click="addsort(index)">编辑</div>
+          <div class="userbtWrap">
+            <div class="myBtn" @click="addsort(index)">编辑</div>
+            <div class="myBtn" @click="Renewalfee(index)" style="margin-top:10px;background:orange;">续费</div>
+          </div>
         </div>
         <div class="sortListB">
           <div class="goodsList">
-            <div>供应商地址：
-              <span class="sortListSp red">{{ item.address }}</span>
+            <div>管理员名称：
+              <span class="sortListSp blue">{{ item.adminname }}</span>
             </div>
-            <div>添加时间：
-              <span class="sortListSp blue">{{ item.addtime }}</span>
-            </div>
-            <div>备注：
-              <span class="sortListSp yellow">{{ item.remark }}</span>
+            <div>到期时间：
+              <span class="sortListSp yellow">{{ item.addtime }}</span>
             </div>
           </div>
           <div class="myBtn" style="background:#191970;" @click="copyTask(index)">删除</div>
@@ -51,34 +49,24 @@
     </div>
     <el-dialog :visible.sync="dialogaddsort" title="编辑商品" style="width:80%;">
       <div class="dialog_div">
-        <span class="dialog_sp">供应商名称</span>
-        <el-input v-model="sorts.name" placeholder="请输入供应商名称" autocomplete="off"></el-input>
+        <span class="dialog_sp">用户名</span>
+        <el-input disabled v-model="sorts.username" placeholder="请输入用户名" autocomplete="off"></el-input>
+      </div>
+      <div class="dialog_div">
+        <span class="dialog_sp">密码</span>
+        <el-input v-model="sorts.password" placeholder="请输入密码" autocomplete="off"></el-input>
+      </div>
+      <div class="dialog_div">
+        <span class="dialog_sp">账号名称</span>
+        <el-input v-model="sorts.department" placeholder="请输入账号名称" autocomplete="off"></el-input>
+      </div>
+      <div class="dialog_div">
+        <span class="dialog_sp">管理员</span>
+        <el-input v-model="sorts.adminname" placeholder="请输入管理员" autocomplete="off"></el-input>
       </div>
       <div class="dialog_div">
         <span class="dialog_sp">电话</span>
         <el-input v-model="sorts.phone" placeholder="请输入电话" autocomplete="off"></el-input>
-      </div>
-      <div class="dialog_div">
-        <span class="dialog_sp">联系人</span>
-        <el-input v-model="sorts.contact" placeholder="请输入联系人" autocomplete="off"></el-input>
-      </div>
-      <div class="dialog_div">
-        <span class="dialog_sp">供应商地址</span>
-        <el-input
-          type="textarea"
-          :rows="2"
-          placeholder="请输入分类备注"
-          v-model="sorts.address">
-        </el-input>
-      </div>
-      <div class="dialog_div">
-        <span class="dialog_sp">备注</span>
-        <el-input
-          type="textarea"
-          :rows="2"
-          placeholder="请输入分类备注"
-          v-model="sorts.remark">
-        </el-input>
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogaddsort = false">取 消</el-button>
@@ -90,8 +78,8 @@
 
 <script>
 import moment from 'moment' //日期转换插件
-import { getUserid, getRoleId, getpartantId } from '@/utils/cookie'
-import { getSupplierinfo, editeSupplierinfo, deleteSupplier } from '@/api/supplier' //请求函数
+import { getUserid, getRoleId, getpartantId, getUserName } from '@/utils/cookie'
+import { getUserByPermission, editeUser, deletUser } from '@/api/user' //请求函数
 import { Indicator } from 'mint-ui'
 
 export default {
@@ -109,11 +97,9 @@ export default {
       listQuery: { //动态请求table数据时传递的参数
         page_no: 1, //页码
         page_size: 10,//每页显示条数
-        name: '',//商品名称
-        phone: '',//商品编码
-        role: getRoleId(),
-        uid: getUserid(),
-        pid: getpartantId()
+        role: null,//角色
+        username: null,//用户名
+        partantuser: getUserName(),//上级用户名
       },
       sortss: [],
       suppliers: [],
@@ -128,6 +114,10 @@ export default {
     }
   },
   methods: {
+    //添加账号
+    adduser() {
+      this.$router.push({ path: '/adduser' })
+    },
     //编辑商品
     addsort(index) {
       this.dialogaddsort = true
@@ -147,28 +137,28 @@ export default {
     },
     //更改商品信息
     editsortinfo() {
-      editeSupplierinfo(this.sorts).then(res => {
+      editeUser(this.sorts).then(res => {
         this.dialogaddsort = false
         this.$message({
           type: 'success',
           message: res.data.message
         })
       }).catch(error => {
-        this.$message('编辑供应商信息失败!')
+        this.$message('编辑账号信息失败!')
       })
     },
     //点击删除
     copyTask(num) {
       let sort = this.sortList[num]
-      this.$confirm('此操作将永久删除该供应商, 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除该账号, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
         let data = {
-          'id': sort.id
+          'username': sort.username
         }
-        deleteSupplier(data).then(res => {
+        deletUser(data).then(res => {
           this.$message({
             type: 'success',
             message: res.data.message
@@ -202,14 +192,14 @@ export default {
       Indicator.open({
         spinnerType: 'fading-circle'
       })
-      getSupplierinfo(this.listQuery).then(res => {
+      getUserByPermission(this.listQuery).then(res => {
         let { data } = res
         if (data.code == 200) {
           Indicator.close()
           if (query == 1) {
             let newsortList = this.sortList.concat(data.data.data)
             if (data.data.data == '') {
-              this.$message('没有更多供应商!')
+              this.$message('没有更多账号!')
               this.listQuery.page_no -= 1
             }
             this.sortList = newsortList
@@ -220,12 +210,12 @@ export default {
         if (data.code == 201) {
           this.sortList = []
           Indicator.close()
-          this.$message('没有更多供应商!')
+          this.$message('没有更多账号!')
         }
       }).catch(error => {
         this.sortList = []
         Indicator.close()
-        this.$message('获取供应商信息失败！')
+        this.$message('获取账号信息失败！')
       })
     },
   },
@@ -270,9 +260,7 @@ export default {
 }
 .addSortbtWrap {
   width:100%;
-  position:fixed;
-  bottom:30px;
-  left:0;
+  margin-bottom: 30px;
   text-align: center;
 }
 .sortListWrap {
@@ -303,7 +291,7 @@ export default {
 }
 .sortListSp {
   display: inline-block;
-  width: 350px;
+  width: 300px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -321,6 +309,13 @@ export default {
 }
 .goodsList>div {
   padding: 10px 0;
+}
+.userbtWrap {
   display: flex;
+  flex-direction: column;
+}
+.subWrap {
+  display: flex;
+  align-items: center;
 }
 </style>

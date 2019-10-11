@@ -1,6 +1,11 @@
 <template>
   <div class="loginWrap">
-    <div class="goBack" @click="$router.go(-1)" style="position:fixed;">< 返回</div>
+    <!-- <div class="goBack" @click="$router.go(-1)" style="position:fixed;">< 返回</div> -->
+    <div class="vanNavBar" style="position:fixed;top:20px;left:0;">
+      <div class="vanNavBarLeft" @click="$router.go(-1)"><img src="../assets/img/back.png" alt=""> <span>返回</span></div>
+      <div class="vanNavBarCenter"></div>
+      <div class="vanNavBarRight"></div>
+    </div>
     <div id="menu-wrap">
       <div class="wrap1 animated bounceInDown">
         <div class="wrap2">

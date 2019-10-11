@@ -1,6 +1,10 @@
 <template>
   <div class="loginWrap">
-    <div class="goBack" @click="$router.go(-1)">< 返回</div>
+    <div class="vanNavBar">
+      <div class="vanNavBarLeft" @click="$router.go(-1)"><img src="../../assets/img/back.png" alt=""> <span>返回</span></div>
+      <div class="vanNavBarCenter" style="color:black;"></div>
+      <div class="vanNavBarRight"></div>
+    </div>
     <div class="content" style="z-index:0;">
       <div class="logoWrap" style="z-index:1">
         <div class="logoWrap1">

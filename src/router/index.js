@@ -12,6 +12,11 @@ import addmember from '../view/member/addmember'
 import memberlist from '../view/member/memberlist'
 import supplierlist from '../view/supplier/supplierlist'
 import addsupplier from '../view/supplier/addsupplier'
+import userlist from '../view/user/userlist'
+import adduser from '../view/user/adduser'
+import userindex from '../view/userIndex'
+import activelist from '../view/active/activelist'
+import addactive from '../view/active/addactive'
 
 Vue.use(Router)
 
@@ -78,6 +83,31 @@ export default new Router({
       path: '/goodsprice',
       name: 'goodsprice',
       component: goodsprice
+    },
+    {
+      path: '/userlist',
+      name: 'userlist',
+      component: userlist
+    },
+    {
+      path: '/adduser',
+      name: 'adduser',
+      component: adduser
+    },
+    {
+      path: '/userindex',
+      name: 'userindex',
+      component: userindex
+    },
+    {
+      path: '/activelist',
+      name: 'activelist',
+      component: activelist
+    },
+    {
+      path: '/addactive',
+      name: 'addactive',
+      component: addactive
     },
   ]
 })

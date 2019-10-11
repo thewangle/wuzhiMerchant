@@ -14,9 +14,12 @@ import Cookies from 'js-cookie'  //cookie插件
 import animate from 'animate.css'  //动画插件
 import axios from 'axios'
 import './utils/permission' // permission control
+import Vant from 'vant'; //移动ui
+import 'vant/lib/index.css'; //移动ui
 
 Vue.use(ElementUI)
 Vue.use(Mint)
+Vue.use(Vant);
 Vue.prototype.$moment = moment
 
 Vue.config.productionTip = false

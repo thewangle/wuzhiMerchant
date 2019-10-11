@@ -1,25 +1,28 @@
 <template>
   <div class="loginWrap" @scroll="handleFilterScrloo">
-    <div class="goBack" @click="$router.go(-1)">< 返回</div>
+    <div class="vanNavBar">
+      <div class="vanNavBarLeft" @click="$router.go(-1)"><img src="../../assets/img/back.png" alt=""> <span>返回</span></div>
+      <div class="vanNavBarCenter" style="color:black;">分类列表</div>
+      <div class="vanNavBarRight"></div>
+    </div>
     <div class="sortContentWrpa">
       <div class="subWrap">
         <el-input v-model="listQuery.name" placeholder="请输入分类名称" style="width: 250px;" @keyup.enter.native="handleFilter"/>
         <el-button type="success" icon="el-icon-search" @click="handleFilter">查询</el-button>
       </div>
+      <div class="addSortbtWrap">
+        <el-button style="width:90%;" class="filter-item" type="primary" icon="el-icon-edit" @click="addsort(0)">添加分类</el-button>
+      </div>
       <div class="sortListWrap" v-for="(item,index) in sortList">
         <div class="sortListB">
-          <span class="sortListSp">{{ item.name }}</span>
+          <span class="sortListSp biao yellow">分类名称：{{ item.name }}</span>
           <div class="myBtn" @click="addsort(1,index)">编辑</div>
         </div>
-        <div class="sortListBr"></div>
         <div class="sortListB">
-          <span class="sortListSp">{{ item.remark }}</span>
+          <span class="sortListSp blue">分类描述：{{ item.remark }}</span>
           <div class="myBtn" style="background:#191970;" @click="copyTask(index)">删除</div>
         </div>
       </div>
-    </div>
-    <div class="addSortbtWrap">
-      <el-button style="width:90%;" class="filter-item" type="primary" icon="el-icon-edit" @click="addsort(0)">添加分类</el-button>
     </div>
     <el-dialog :visible.sync="dialogaddsort" title="添加分类">
       <div class="dialog_div">
@@ -212,8 +215,10 @@ export default {
 .loginWrap {
   width: 100%;
   height: 100%; 
-  background-image: linear-gradient( 153deg, rgb(10,100,10) 0%, rgb(100,2,30) 100%);
-  color: white;
+  /*background-image: linear-gradient( 153deg, rgb(10,100,10) 0%, rgb(100,2,30) 100%);*/
+  background: rgb(240,240,240);
+  background: white;
+  color: rgb(140,140,140);
   -webkit-overflow-scrolling: touch;
   overflow: auto;
 }
@@ -234,9 +239,10 @@ export default {
 }
 .addSortbtWrap {
   width:100%;
-  position:fixed;
+  /*position:fixed;
   bottom:30px;
-  left:0;
+  left:0;*/
+  margin-bottom: 30px;
   text-align: center;
 }
 .sortListWrap {
@@ -247,11 +253,12 @@ export default {
   background: white;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
-  background-image: linear-gradient( 153deg, rgb(255,215,0) 0%, rgb(10,200,30) 100%);
+  border-bottom: 10px solid rgb(230,230,230);
+  /*background-image: linear-gradient( 153deg, rgb(255,255,255) 0%, rgb(230,230,230) 100%);*/
   margin:20px 0;
 }
 .sortListWrap:last-child{
-  margin-bottom: 90px;
+  margin-bottom: 30px;
 }
 .sortListB {
   width: 90%;

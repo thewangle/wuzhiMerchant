@@ -1,6 +1,10 @@
 <template>
   <div class="loginWrap" @scroll="handleFilterScrloo">
-    <div class="goBack" @click="$router.go(-1)">< 返回</div>
+    <div class="vanNavBar">
+      <div class="vanNavBarLeft" @click="$router.go(-1)"><img src="../../assets/img/back.png" alt=""> <span>返回</span></div>
+      <div class="vanNavBarCenter" style="color:black;">会员列表</div>
+      <div class="vanNavBarRight"></div>
+    </div>
     <div class="sortContentWrpa">
       <div class="subWrapGoodslist">
         <div style="font-size:17px;">条件筛选</div>
@@ -17,37 +21,34 @@
       <div class="sortListWrap" v-for="(item,index) in sortList">
         <div class="sortListB">
           <div class="goodsList">
-            <div>会员姓名：
+            <div class="biao">会员姓名：
               <span class="sortListSp">{{ item.name }}</span>
             </div>
             <div>电话：
-              <span class="sortListSp">{{ item.phone }}</span>
+              <span class="sortListSp yellow">{{ item.phone }}</span>
             </div>
             <div>会员生日：
-              <span class="sortListSp">{{ item.birthday }}</span>
+              <span class="sortListSp blue">{{ item.birthday }}</span>
             </div>
           </div>
           <div class="myBtn" @click="addsort(index)">编辑</div>
-          <!-- <el-button type="primary" @click="addsort(index)">编辑</el-button> -->
         </div>
-        <div class="sortListBr"></div>
         <div class="sortListB">
           <div class="goodsList">
             <div>年龄：
-              <span class="sortListSp">{{ item.age }}</span>
+              <span class="sortListSp red">{{ item.age }}</span>
             </div>
             <div>会员性别：
-              <span class="sortListSp">{{ item.sex }}</span>
+              <span class="sortListSp blue">{{ item.sex }}</span>
             </div>
             <div>会员描述：
-              <span class="sortListSp">{{ item.description }}</span>
+              <span class="sortListSp yellow">{{ item.description }}</span>
             </div>
             <div>添加时间：
               <span class="sortListSp">{{ item.addtime }}</span>
             </div>
           </div>
           <div class="myBtn" style="background:#191970;" @click="copyTask(index)">删除</div>
-          <!-- <el-button type="primary" @click="copyTask(index)">删除</el-button> -->
         </div>
       </div>
     </div>
@@ -151,7 +152,7 @@ export default {
           message: res.data.message
         })
       }).catch(error => {
-        this.$message('编辑供应商信息失败!')
+        this.$message('编辑会员信息失败!')
       })
     },
     //点击删除
@@ -241,8 +242,9 @@ export default {
 .loginWrap {
   width: 100%;
   height: 100%; 
-  background-image: linear-gradient( 153deg, rgb(10,100,10) 0%, rgb(100,2,30) 100%);
-  color: white;
+  background: rgb(240,240,240);
+  background: white;
+  color: rgb(140,140,140);
   -webkit-overflow-scrolling: touch;
   overflow: auto;
 }
@@ -263,7 +265,7 @@ export default {
   margin-top: 20px;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
-  background-image: linear-gradient( 153deg, rgb(100,10,30) 0%, rgb(10,200,30) 100%);
+  border-bottom: 10px solid rgb(230,230,230);
 }
 .subWrapGoodslist>div {
   width: 90%;
@@ -271,7 +273,6 @@ export default {
   justify-content: center;
   align-items: center;
   padding: 10px 0;
-  color: white;
 }
 .addSortbtWrap {
   width:100%;
@@ -288,7 +289,7 @@ export default {
   background: white;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
-  background-image: linear-gradient( 153deg, rgb(255,215,0) 0%, rgb(10,200,30) 100%);
+  border-bottom: 10px solid rgb(230,230,230);
   margin:20px 0;
 }
 .sortListWrap:last-child{
@@ -312,7 +313,6 @@ export default {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  color: white;
 }
 .dialog_div{
   padding: 10px 0;
@@ -327,7 +327,6 @@ export default {
 }
 .goodsList>div {
   padding: 10px 0;
-  color: white;
   display: flex;
   align-items: center;
 }

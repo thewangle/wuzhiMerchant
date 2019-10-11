@@ -13,11 +13,13 @@
     "animate.css": "^3.7.2",
     "axios": "^0.19.0",
     "element-ui": "^2.11.1",
+    "i": "^0.3.6",
     "jquery": "^3.4.1",
     "js-cookie": "^2.2.1",
     "lib-flexible": "^0.3.2",
     "mint-ui": "^2.2.13",
     "moment": "^2.24.0",
+    "vant": "^2.2.2",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1"
   },

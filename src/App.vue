@@ -57,6 +57,33 @@ li {
   color: white;
   border-radius: 5px;
 }
+/*返回*/
+.vanNavBar {
+  width: 100%;
+  height: 50px;
+  /*background: white;*/
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.vanNavBarLeft {
+  margin-left: 20px;
+  color: #1296db;
+  font-size: 12px; /*no*/
+  display: flex;
+  align-items: center;
+}
+.vanNavBarLeft>img {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+}
+.vanNavBarCenter {
+  font-size: 13px; /*no*/
+}
+.vanNavBarRight {
+  width: 100px;
+}
 .el-button span {
   font-size: 12px; /*no*/
 }
@@ -75,6 +102,9 @@ li {
   color: white;
   font-size: 15px; /*no*/
   z-index: 9999;
+}
+.van-nav-bar__title,.van-picker__cancel,.van-picker__confirm,.van-ellipsis,.van-cell__title>span,.van-button__text {
+  font-size: 13px !important; /*no*/
 }
 .el-dialog__title,.el-message-box__title>span {
   font-size: 16px !important;/*no*/
@@ -105,6 +135,19 @@ li {
 }
 .picker-items{ 
   width:100%;
+}
+.biao {
+  font-size: 15px; /*no*/
+  color: rgb(100,100,100);
+}
+.red {
+  color: #F56C6C;
+}
+.blue {
+  color: #409EFF;
+}
+.yellow {
+  color: #E6A23C;
 }
 /*按钮css*/
 .bubbly-button {

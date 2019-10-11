@@ -80,6 +80,7 @@ export default {
     clearCookie: function() {
         this.setCookie("", "", -1); //修改2值都为空，天数为负1天就好了
     },
+    //登录
     login(e) {
       if (this.user_record) {
         this.setCookie(this.loginForm.username, this.loginForm.password, 7);
@@ -114,7 +115,7 @@ export default {
             this.$message({
               type: 'warning',
               center: true,
-              message: '您的账号已经到期，请联系管理员！'
+              message: '您的账号已经到期，请续费或联系管理员！'
             });
             this.is_login = false
             this.logins='登 录'
@@ -126,12 +127,15 @@ export default {
             }
             loginByUsername(data).then(res => {
               let { data } = res
-              console.log(data)
               if (data.code == 200) {
                 setUserInfo(data.data)
                 this.is_login = false
                 this.logins='登 录'
-                this.$router.push({ path: '/index' })
+                if (data.data.role == 3) {
+                  this.$router.push({ path: '/index' })
+                } else {
+                  this.$router.push({ path: '/userindex' })
+                }
               }
               if (data.code == 201) {
                 this.$message({

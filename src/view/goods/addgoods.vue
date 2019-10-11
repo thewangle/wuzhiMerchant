@@ -1,6 +1,11 @@
 <template>
   <div class="loginWrap">
-    <div class="goBack" @click="$router.go(-1)">< 返回</div>
+    <!-- <div class="goBack" @click="$router.go(-1)">< 返回</div> -->
+    <div class="vanNavBar">
+      <div class="vanNavBarLeft" @click="$router.go(-1)"><img src="../../assets/img/back.png" alt=""> <span>返回</span></div>
+      <div class="vanNavBarCenter" style="color:black;"></div>
+      <div class="vanNavBarRight"></div>
+    </div>
     <div class="content" style="z-index:0;">
       <div class="logoWrap" style="z-index:1">
         <div class="logoWrap1">
@@ -12,39 +17,39 @@
       <div class="formWrap">
         <div class="formName animated bounceInLeft">
           <span class="formB">商品名称</span>
-          <el-input v-model="loginForm.name" placeholder="name" name="name" type="text" auto-complete="on"/>
+          <el-input v-model="loginForm.name" placeholder="请输入商品名称" name="name" type="text" auto-complete="on"/>
         </div>
         <div class="formName animated bounceInRight" style="margin-top: 20px;">
           <span class="formB">商品编码</span>
-          <el-input v-model="loginForm.code" placeholder="code" name="code" type="text" auto-complete="on"/>
+          <el-input v-model="loginForm.code" placeholder="请输入商品编码" name="code" type="text" auto-complete="on"/>
         </div>
         <div class="formName animated bounceInLeft" style="margin-top: 20px;">
           <span class="formB">商品规格</span>
-          <el-input v-model="loginForm.format" placeholder="format" name="format" type="text" auto-complete="on"/>
+          <el-input v-model="loginForm.format" placeholder="请输入商品规格" name="format" type="text" auto-complete="on"/>
         </div>
         <div class="formName animated bounceInRight" style="margin-top: 20px;">
           <span class="formB">商品数量</span>
-          <el-input v-model="loginForm.nums" placeholder="nums" name="nums" type="text" auto-complete="on"/>
+          <el-input v-model="loginForm.nums" placeholder="请输入商品数量" name="nums" type="text" auto-complete="on"/>
         </div>
         <div class="formName animated bounceInLeft" style="margin-top: 20px;">
           <span class="formB">库存上线</span>
-          <el-input v-model="loginForm.maxnums" placeholder="maxnums" name="maxnums" type="text" auto-complete="on"/>
+          <el-input v-model="loginForm.maxnums" placeholder="请输入库存上线" name="maxnums" type="text" auto-complete="on"/>
         </div>
         <div class="formName animated bounceInRight" style="margin-top: 20px;">
           <span class="formB">库存下线</span>
-          <el-input v-model="loginForm.minnums" placeholder="minnums" name="minnums" type="text" auto-complete="on"/>
+          <el-input v-model="loginForm.minnums" placeholder="请输入库存下线" name="minnums" type="text" auto-complete="on"/>
         </div>
         <div class="formName animated bounceInLeft" style="margin-top: 20px;">
           <span class="formB">商品进价</span>
-          <el-input v-model="loginForm.inprice" placeholder="inprice" name="inprice" type="text" auto-complete="on"/>
+          <el-input v-model="loginForm.inprice" placeholder="请输入商品进价" name="inprice" type="text" auto-complete="on"/>
         </div>
         <div class="formName animated bounceInRight" style="margin-top: 20px;">
           <span class="formB">商品售价</span>
-          <el-input v-model="loginForm.outprice" placeholder="outprice" name="outprice" type="text" auto-complete="on"/>
+          <el-input v-model="loginForm.outprice" placeholder="请输入商品售价" name="outprice" type="text" auto-complete="on"/>
         </div>
         <div class="formName animated bounceInRight" style="margin-top: 20px;">
           <span class="formB">商品分类</span>
-          <el-select v-model="loginForm.sort" placeholder="sort">
+          <el-select v-model="loginForm.sort" placeholder="请选择商品分类">
             <el-option
               v-for="item in sorts"
               :label="item.label"
@@ -54,7 +59,7 @@
         </div>
         <div class="formName animated bounceInRight" style="margin-top: 20px;">
           <span class="formB">供应商</span>
-          <el-select v-model="loginForm.supplier" placeholder="supplier">
+          <el-select v-model="loginForm.supplier" placeholder="请选择供应商">
             <el-option
               v-for="item in suppliers"
               :label="item.label"
@@ -64,7 +69,7 @@
         </div>
         <div class="formName animated bounceInRight" style="margin-top: 20px;">
           <span class="formB">备注</span>
-          <el-input v-model="loginForm.remark" :rows="2" placeholder="remark" name="remark" type="textarea" auto-complete="on"/>
+          <el-input v-model="loginForm.remark" :rows="2" placeholder="请输入备注" name="remark" type="textarea" auto-complete="on"/>
         </div>
         <div class="formName animated bounceInUp" style="margin-top: 20px;">
           <button :disabled="is_login" class="bubbly-button" @click="addgoods">{{ logins }}</button>
