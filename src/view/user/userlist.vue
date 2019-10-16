@@ -31,7 +31,7 @@
           </div>
           <div class="userbtWrap">
             <div class="myBtn" @click="addsort(index)">编辑</div>
-            <div class="myBtn" @click="Renewalfee(index)" style="margin-top:10px;background:orange;">续费</div>
+            <div class="myBtn" @click="renewalfee(index)" style="margin-top:10px;background:orange;">续费</div>
           </div>
         </div>
         <div class="sortListB">
@@ -47,7 +47,7 @@
         </div>
       </div>
     </div>
-    <el-dialog :visible.sync="dialogaddsort" title="编辑商品" style="width:80%;">
+    <el-dialog :visible.sync="dialogaddsort" title="编辑账号" style="width:80%;" :modal-append-to-body='false'>
       <div class="dialog_div">
         <span class="dialog_sp">用户名</span>
         <el-input disabled v-model="sorts.username" placeholder="请输入用户名" autocomplete="off"></el-input>
@@ -73,13 +73,26 @@
         <el-button type="primary" @click="addsortsubmit">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- 续费 -->
+    <el-dialog :visible.sync="dialogrenewalfee" title="续费" style="width:80%;" :modal-append-to-body='false'>
+      <div class="dialog_div">
+        <span class="dialog_sp" style="width:100px;">续费年限：</span>
+        <div style="width:150px;">
+          <el-input v-model="years" autocomplete="off"><template slot="append">年</template></el-input>
+        </div>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogrenewalfee = false">取 消</el-button>
+        <el-button type="primary" @click="renewalfeebt">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import moment from 'moment' //日期转换插件
 import { getUserid, getRoleId, getpartantId, getUserName } from '@/utils/cookie'
-import { getUserByPermission, editeUser, deletUser } from '@/api/user' //请求函数
+import { getUserByPermission, editeUser, deletUser, renewalFee } from '@/api/user' //请求函数
 import { Indicator } from 'mint-ui'
 
 export default {
@@ -94,6 +107,8 @@ export default {
     return {
       loading: false,
       dialogaddsort: false,
+      dialogrenewalfee: false,
+      years: 1, //续费用年限
       listQuery: { //动态请求table数据时传递的参数
         page_no: 1, //页码
         page_size: 10,//每页显示条数
@@ -114,14 +129,48 @@ export default {
     }
   },
   methods: {
+    //点击续费
+    renewalfee(index) {
+      this.sorts = this.sortList[index]
+      this.dialogrenewalfee = true
+    },
+    //更改续费提交
+    renewalfeebt() {
+      let is_num = /^\+?[1-9][0-9]*$/
+      if (!is_num.test(this.years)) {
+        this.$message({
+          message: '请您输入正确的数量',
+          type: 'warning',
+          center: true
+        });
+        return
+      }
+      let addtimes = moment(this.sorts.addtime).add('days',365 * (this.years)).format('YYYY-MM-DD HH:mm:ss')
+      let data = {
+        username : this.sorts.username,
+        addtime : addtimes
+      }
+      renewalFee(data).then(res => {
+        this.dialogrenewalfee = false
+        this.$message({
+          type: 'success',
+          message: res.data.message
+        });
+        this.sorts = ''
+        this.years = 1
+        // this._fetchActivityList()
+      }).catch(error => {
+        this.$message(error)
+      })
+    },
     //添加账号
     adduser() {
       this.$router.push({ path: '/adduser' })
     },
     //编辑商品
     addsort(index) {
-      this.dialogaddsort = true
       this.sorts = this.sortList[index]
+      this.dialogaddsort = true
     },
     //添加/更改商品信息
     addsortsubmit() {
@@ -129,7 +178,8 @@ export default {
       if(!(/^1[3456789]\d{9}$/.test(this.sorts.phone))){ 
           this.$message({
             message: '请您输入正确的手机号格式！',
-            type: 'warning'
+            type: 'warning',
+            center: true
           });
           return false; 
       }
@@ -141,10 +191,15 @@ export default {
         this.dialogaddsort = false
         this.$message({
           type: 'success',
-          message: res.data.message
+          message: res.data.message,
+          center: true
         })
       }).catch(error => {
-        this.$message('编辑账号信息失败!')
+        this.$message({
+          type: 'error',
+          message: '编辑账号信息失败!',
+          center: true
+        })
       })
     },
     //点击删除
@@ -161,11 +216,16 @@ export default {
         deletUser(data).then(res => {
           this.$message({
             type: 'success',
-            message: res.data.message
+            message: res.data.message,
+            center: true
           });
           this.handleFilter()
         }).catch(error => {
-          this.$message('删除失败')
+          this.$message({
+            type: 'error',
+            message: '删除失败!',
+            center: true
+          })
         })
       }).catch(() => {
 
@@ -199,7 +259,11 @@ export default {
           if (query == 1) {
             let newsortList = this.sortList.concat(data.data.data)
             if (data.data.data == '') {
-              this.$message('没有更多账号!')
+              this.$message({
+                type: 'error',
+                message: '没有更多账号!',
+                center: true
+              })
               this.listQuery.page_no -= 1
             }
             this.sortList = newsortList
@@ -210,12 +274,20 @@ export default {
         if (data.code == 201) {
           this.sortList = []
           Indicator.close()
-          this.$message('没有更多账号!')
+          this.$message({
+            type: 'error',
+            message: '没有更多账号!',
+            center: true
+          })
         }
       }).catch(error => {
         this.sortList = []
         Indicator.close()
-        this.$message('获取账号信息失败！')
+        this.$message({
+          type: 'error',
+          message: '没有更多账号!',
+          center: true
+        })
       })
     },
   },
@@ -246,10 +318,7 @@ export default {
   flex-direction: column;
   align-items: center;
   background: white;
-  margin-top: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
-  border-bottom: 10px solid rgb(230,230,230);
+  border-bottom: 1px solid rgb(220,220,220);
 }
 .subWrapGoodslist>div {
   width: 90%;
@@ -263,19 +332,8 @@ export default {
   margin-bottom: 30px;
   text-align: center;
 }
-.sortListWrap {
-  width: 90%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
-  border-bottom: 10px solid rgb(230,230,230);
-  margin:20px 0;
-}
 .sortListWrap:last-child{
-  margin-bottom: 90px;
+  margin-bottom: 30px;
 }
 .sortListB {
   width: 90%;
@@ -309,6 +367,8 @@ export default {
 }
 .goodsList>div {
   padding: 10px 0;
+  display: flex;
+  align-items: center;
 }
 .userbtWrap {
   display: flex;

@@ -1,6 +1,5 @@
 <template>
   <div class="loginWrap" @scroll="handleFilterScrloo">
-    <!-- <div class="goBack" @click="$router.go(-1)">< 返回</div> -->
     <div class="vanNavBar">
       <div class="vanNavBarLeft" @click="$router.go(-1)"><img src="../../assets/img/back.png" alt=""> <span>返回</span></div>
       <div class="vanNavBarCenter" style="color:black;">商品入库</div>
@@ -16,23 +15,24 @@
           <el-input v-model="listQuery.code" placeholder="请输入商品编码" @keyup.enter.native="handleFilter"/>
         </div>
         <div>
-          <el-select style="width:100%;" v-model="listQuery.sortid" placeholder="请选择分类" @change="handleFilter">
+          <el-select style="width:100%;" clearable v-model="listQuery.sortid" placeholder="请选择分类" @change="handleFilter">
             <el-option v-for="item in sortss" :label="item.label" :value="item.value"/>
           </el-select>
         </div>
         <div>
-          <el-select style="width:100%;" v-model="listQuery.supplierid" placeholder="请选择供应商" @change="handleFilter">
+          <el-select style="width:100%;" clearable v-model="listQuery.supplierid" placeholder="请选择供应商" @change="handleFilter">
             <el-option v-for="item in suppliers" :label="item.label" :value="item.value"/>
           </el-select>
         </div>
         <div>
-          <el-button type="success" icon="el-icon-search" @click="handleFilter" style="margin-top:10px;">查询</el-button>
+          <el-button type="success" icon="el-icon-search" @click="handleFilter" style="margin-top:10px;width:100%;padding:10px 0;">查询</el-button>
         </div>
       </div>
       <div class="sortListWrap" v-for="(item,index) in sortList">
         <div class="sortListB">
           <div class="goodsList">
-            <div class="biao">商品名称：
+            <div class="biao">
+              <span class="spanB">商品名称：</span>
               <span class="sortListSp yellow">{{ item.name }}</span>
             </div>
             <div>商品编码：
@@ -46,9 +46,7 @@
             </div>
           </div>
           <div class="myBtn" @click="addsort(index)">入库</div>
-          <!-- <el-button type="primary" @click="addsort(index)">编辑</el-button> -->
         </div>
-        <!-- <div class="sortListBr"></div> -->
         <div class="sortListB">
           <div class="goodsList">
             <div>商品进价：
@@ -65,25 +63,24 @@
             </div>
           </div>
           <div class="myBtn" style="background:#191970;" @click="copyTask(index)">退货</div>
-          <!-- <el-button type="primary" @click="copyTask(index)">删除</el-button> -->
         </div>
       </div>
     </div>
     <!-- 出售商品 -->
-    <el-dialog :visible.sync="dialogaddsort" title="出售商品" style="width:80%;">
+    <el-dialog :visible.sync="dialogaddsort" title="商品入库" style="width:80%;" :modal-append-to-body='false'>
       <div class="dialog_div">
-        <span class="dialog_sp">出售数量</span>
-        <el-input v-model="sorts.changenums" placeholder="请输入商品规格" autocomplete="off"></el-input>
+        <span class="dialog_sp">入库数量</span>
+        <el-input v-model="sorts.changenums" @input="change($event)" placeholder="请输入商品规格" autocomplete="off"></el-input>
       </div>
       <div class="dialog_div">
-        <span class="dialog_sp">出售日期</span>
-        <el-select style="width:100%;" v-model="sorts.date" placeholder="请选择出售日期">
+        <span class="dialog_sp">入库日期</span>
+        <el-select style="width:100%;" clearable v-model="sorts.date" placeholder="请选择出售日期">
           <el-option v-for="item in dates" :label="item.label" :value="item.value"/>
         </el-select>
       </div>
       <div class="dialog_div">
-        <span class="dialog_sp">出售时间</span>
-        <el-select style="width:100%;" v-model="sorts.time" placeholder="请选择出售日期">
+        <span class="dialog_sp">入库时间</span>
+        <el-select style="width:100%;" clearable v-model="sorts.time" placeholder="请选择出售日期">
           <el-option v-for="item in times" :label="item.label" :value="item.value"/>
         </el-select>
       </div>
@@ -101,20 +98,20 @@
       </div>
     </el-dialog>
     <!-- 报损商品 -->
-    <el-dialog :visible.sync="dialogaddsort1" title="出售商品" style="width:80%;">
+    <el-dialog :visible.sync="dialogaddsort1" title="商品退货" style="width:80%;" :modal-append-to-body='false'>
       <div class="dialog_div">
-        <span class="dialog_sp">报损数量</span>
-        <el-input v-model="sorts.changenums" placeholder="请输入商品规格" autocomplete="off"></el-input>
+        <span class="dialog_sp">退货数量</span>
+        <el-input v-model="sorts.changenums" @input="change($event)" placeholder="请输入商品规格" autocomplete="off"></el-input>
       </div>
       <div class="dialog_div">
-        <span class="dialog_sp">报损日期</span>
-        <el-select style="width:100%;" v-model="sorts.date" placeholder="请选择报损日期">
+        <span class="dialog_sp">退货日期</span>
+        <el-select style="width:100%;" clearable v-model="sorts.date" placeholder="请选择报损日期">
           <el-option v-for="item in dates" :label="item.label" :value="item.value"/>
         </el-select>
       </div>
       <div class="dialog_div">
-        <span class="dialog_sp">报损时间</span>
-        <el-select style="width:100%;" v-model="sorts.time" placeholder="请选择报损日期">
+        <span class="dialog_sp">退货时间</span>
+        <el-select style="width:100%;" clearable v-model="sorts.time" placeholder="请选择报损日期">
           <el-option v-for="item in times" :label="item.label" :value="item.value"/>
         </el-select>
       </div>
@@ -214,6 +211,10 @@ export default {
     }
   },
   methods: {
+    //解决input不能输入问题
+    change() {
+      this.$forceUpdate()
+    },
     //根据用户id获取分类
     getsortinfoall() {
       let params = {
@@ -259,14 +260,16 @@ export default {
       if (this.sorts.changenums == '' || this.sorts.numtype == '' || this.sorts.date == '' || this.sorts.time == '' || this.sorts.inpricenow == '' || this.sorts.outpricenow == '') {
         this.$message({
           message: '请您填写完整信息',
-          type: 'warning'
+          type: 'warning',
+          center: true
         });
         return
       }
       if (!this.sorts.date || !this.sorts.time) {
         this.$message({
           message: '请您选择日期和时间',
-          type: 'warning'
+          type: 'warning',
+          center: true
         });
         return
       }
@@ -280,12 +283,17 @@ export default {
         }
         this.$message({
           type: 'success',
-          message: res.data.message
+          message: res.data.message,
+          center: true
         });
         this.sorts = ''
         this._fetchActivityList(0)
       }).catch(error => {
-        this.$message('商品出入库失败!')
+        this.$message({
+          type: 'error',
+          message: '商品出入库失败!',
+          center: true
+        });
       })
     },
     //报损商品
@@ -323,7 +331,11 @@ export default {
           if (query == 1) {
             let newsortList = this.sortList.concat(data.data.data)
             if (data.data.data == '') {
-              this.$message('没有更多商品!')
+              this.$message({
+                type: 'error',
+                message: '没有更多商品！',
+                center: true
+              });
               this.listQuery.page_no -= 1
             }
             this.sortList = newsortList
@@ -334,12 +346,20 @@ export default {
         if (data.code == 201) {
           this.sortList = []
           Indicator.close()
-          this.$message('没有更多商品!')
+          this.$message({
+            type: 'error',
+            message: '没有更多商品！',
+            center: true
+          });
         }
       }).catch(error => {
         this.sortList = []
         Indicator.close()
-        this.$message('获取商品信息失败！')
+        this.$message({
+          type: 'error',
+          message: '没有更多商品！',
+          center: true
+        });
       })
     },
   },
@@ -371,11 +391,7 @@ export default {
   flex-direction: column;
   align-items: center;
   background: white;
-  margin-top: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
-  border-bottom: 10px solid rgb(230,230,230);
-  /*background-image: linear-gradient( 153deg, rgb(100,10,30) 0%, rgb(10,200,30) 100%);*/
+  border-bottom: 1px solid rgb(230,230,230);
 }
 .subWrapGoodslist>div {
   width: 90%;
@@ -391,18 +407,6 @@ export default {
   bottom:30px;
   left:0;
   text-align: center;
-}
-.sortListWrap {
-  width: 90%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
-  border-bottom: 10px solid rgb(230,230,230);
-  /*background-image: linear-gradient( 153deg, rgb(255,215,0) 0%, rgb(10,200,30) 100%);*/
-  margin:20px 0;
 }
 .sortListWrap:last-child{
   margin-bottom: 30px;

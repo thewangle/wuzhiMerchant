@@ -7,7 +7,7 @@
     </div>
     <div class="sortContentWrpa">
       <div class="subWrapGoodslist">
-        <div style="font-size:17px;">条件筛选</div>
+        <div style="font-size:17px;color:rgb(100,100,100);">条件筛选</div>
         <div>
           <el-input v-model="listQuery.name" placeholder="请输入商品名称" @keyup.enter.native="handleFilter"/>
         </div>
@@ -15,23 +15,24 @@
           <el-input v-model="listQuery.code" placeholder="请输入商品编码" @keyup.enter.native="handleFilter"/>
         </div>
         <div>
-          <el-select style="width:100%;" v-model="listQuery.sortid" placeholder="请选择分类" @change="handleFilter">
+          <el-select style="width:100%;" clearable v-model="listQuery.sortid" placeholder="请选择分类" @change="handleFilter">
             <el-option v-for="item in sortss" :label="item.label" :value="item.value"/>
           </el-select>
         </div>
         <div>
-          <el-select style="width:100%;" v-model="listQuery.supplierid" placeholder="请选择供应商" @change="handleFilter">
+          <el-select style="width:100%;" clearable v-model="listQuery.supplierid" placeholder="请选择供应商" @change="handleFilter">
             <el-option v-for="item in suppliers" :label="item.label" :value="item.value"/>
           </el-select>
         </div>
         <div>
-          <el-button type="success" icon="el-icon-search" @click="handleFilter" style="margin-top:10px;">查询</el-button>
+          <el-button type="success" icon="el-icon-search" @click="handleFilter" style="margin-top:10px;width:100%;padding:10px 0;">查询</el-button>
         </div>
       </div>
       <div class="sortListWrap" v-for="(item,index) in sortList">
         <div class="sortListB">
           <div class="goodsList">
-            <div class="biao">商品名称：
+            <div class="biao">
+              <span class="spanB">商品名称：</span>
               <span class="sortListSp yellow">{{ item.name }}</span>
             </div>
             <div>商品编码：
@@ -65,7 +66,7 @@
         </div>
       </div>
     </div>
-    <el-dialog :visible.sync="dialogaddsort" title="编辑商品" style="width:80%;">
+    <el-dialog :visible.sync="dialogaddsort" title="编辑商品" style="width:80%;" :modal-append-to-body='false'>
       <div class="dialog_div">
         <span class="dialog_sp">商品名称</span>
         <el-input v-model="sorts.name" placeholder="请输入商品名称" autocomplete="off"></el-input>
@@ -76,13 +77,13 @@
       </div>
       <div class="dialog_div">
         <span class="dialog_sp">商品分类</span>
-        <el-select style="width:100%;" v-model="sorts.sortid" placeholder="请选择分类">
+        <el-select style="width:100%;" clearable v-model="sorts.sortid" placeholder="请选择分类">
           <el-option v-for="item in sortss" :label="item.label" :value="item.value"/>
         </el-select>
       </div>
       <div class="dialog_div">
         <span class="dialog_sp">供应商</span>
-        <el-select style="width:100%;" v-model="sorts.supplierid" placeholder="请选择供应商">
+        <el-select style="width:100%;" clearable v-model="sorts.supplierid" placeholder="请选择供应商">
           <el-option v-for="item in suppliers" :label="item.label" :value="item.value"/>
         </el-select>
       </div>
@@ -203,7 +204,8 @@ export default {
       if (this.sorts.name == '' || this.sorts.format == '' || this.sorts.sortid == '' || this.sorts.supplierid == '') {
         this.$message({
           message: '请您填写完整信息',
-          type: 'warning'
+          type: 'warning',
+          center: true
         });
         return
       }
@@ -211,14 +213,16 @@ export default {
       if (!is_num.test(this.sorts.maxnums) || !is_num.test(this.sorts.minnums)) {
         this.$message({
           message: '请您输入正确的数量',
-          type: 'warning'
+          type: 'warning',
+          center: true
         });
         return
       }
       if (Number(this.sorts.maxnums) < Number(this.sorts.minnums)) {
         this.$message({
           message: '库存上线不得小于库存下线',
-          type: 'warning'
+          type: 'warning',
+          center: true
         });
         return
       }
@@ -231,10 +235,15 @@ export default {
         this.dialogaddsort = false
         this.$message({
           type: 'success',
-          message: res.data.message
+          message: res.data.message,
+          center: true
         })
       }).catch(error => {
-        this.$message('编辑商品信息失败!')
+        this.$message({
+          type: 'error',
+          message: '编辑失败！',
+          center: true
+        })
       })
     },
     //点击删除
@@ -251,11 +260,16 @@ export default {
         deletegoodsinfo(data).then(res => {
           this.$message({
             type: 'success',
-            message: res.data.message
+            message: res.data.message,
+            center: true
           });
           this.handleFilter()
         }).catch(error => {
-          this.$message('删除失败')
+          this.$message({
+            type: 'error',
+            message: '删除失败！',
+            center: true
+          });
         })
       }).catch(() => {
 
@@ -289,7 +303,11 @@ export default {
           if (query == 1) {
             let newsortList = this.sortList.concat(data.data.data)
             if (data.data.data == '') {
-              this.$message('没有更多商品!')
+              this.$message({
+                type: 'error',
+                message: '没有更多商品！',
+                center: true
+              });
               this.listQuery.page_no -= 1
             }
             this.sortList = newsortList
@@ -300,12 +318,20 @@ export default {
         if (data.code == 201) {
           this.sortList = []
           Indicator.close()
-          this.$message('没有更多商品!')
+          this.$message({
+            type: 'error',
+            message: '没有更多商品！',
+            center: true
+          });
         }
       }).catch(error => {
         this.sortList = []
         Indicator.close()
-        this.$message('获取商品信息失败！')
+        this.$message({
+          type: 'error',
+          message: '没有更多商品！',
+          center: true
+        });
       })
     },
   },
@@ -330,16 +356,13 @@ export default {
   align-items: center;
 }
 .subWrapGoodslist {
-  width: 90%;
+  width: 100%;
   padding: 50px 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   background: white;
-  margin-top: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
-  border-bottom: 10px solid rgb(230,230,230);
+  border-bottom: 1px solid rgb(230,230,230);
 }
 .subWrapGoodslist>div {
   width: 90%;
@@ -355,18 +378,6 @@ export default {
   bottom:30px;
   left:0;
   text-align: center;
-}
-.sortListWrap {
-  width: 90%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
-  border-bottom: 10px solid rgb(230,230,230);
-  /*background-image: linear-gradient( 153deg, rgb(255,215,0) 0%, rgb(10,200,30) 100%);*/
-  margin:20px 0;
 }
 .sortListWrap:last-child{
   margin-bottom: 30px;

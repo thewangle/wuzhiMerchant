@@ -83,14 +83,16 @@ export default {
       if (this.loginForm.name == '' || this.loginForm.address == '' || this.loginForm.contact == '' || this.loginForm.phone == '') {
         this.$message({
           message: '请您填写完整信息',
-          type: 'warning'
+          type: 'warning',
+          center: true
         });
         return
       }
       if(!(/^1[3456789]\d{9}$/.test(this.loginForm.phone))){ 
           this.$message({
             message: '请您输入正确的手机号格式！',
-            type: 'warning'
+            type: 'warning',
+            center: true
           });
           return false; 
       } 
@@ -100,14 +102,23 @@ export default {
         if (data.code == 200) {
           self.$message({
             message: '恭喜您！创建成功！',
-            type: 'success'
+            type: 'success',
+            center: true
           });
           self.$router.push({ path: '/supplierlist' })
         } else {
-          self.$message.error('对不起！创建失败！')
+          self.$message({
+            message: '对不起！创建失败！',
+            type: 'error',
+            center: true
+          });
         }
       }).catch(error => {
-        self.$message.error('对不起！创建失败！')
+        self.$message({
+          message: '对不起！创建失败！',
+          type: 'error',
+          center: true
+        });
       })
     },
   },

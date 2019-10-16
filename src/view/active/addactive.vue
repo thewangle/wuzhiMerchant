@@ -70,7 +70,7 @@
     <van-popup v-model="isAreaShow" position="bottom" :style="{ height: '40%' }">
       <van-area @confirm="seleAreaOver" @cancel="isAreaShow = false" value="371402" :area-list="areaList" />
     </van-popup>
-    <el-dialog :visible.sync="dialogVisible">
+    <el-dialog :visible.sync="dialogVisible" :modal-append-to-body='false'>
       <img :src="dialogImageUrl" width="100%" alt="">
     </el-dialog>
   </div>
@@ -242,7 +242,8 @@ export default {
         if(req.file.type.indexOf("image/") == -1){ //上传的不是图片
           self.$message({
             message: '请您选择正确的图片格式！',
-            type: 'warning'
+            type: 'warning',
+            center: true
           })
           return
         } else { //上传的是图片
@@ -267,7 +268,8 @@ export default {
         if(req.file.type.indexOf("image/") == -1){ //上传的不是图片
           self.$message({
             message: '请您选择正确的图片格式！',
-            type: 'warning'
+            type: 'warning',
+            center: true
           })
           return
         } else { //上传的是图片
@@ -299,7 +301,8 @@ export default {
       if (this.loginForm.Merchant == '' || this.loginForm.money == '' || this.loginForm.tab == '' || this.loginForm.tab1 == '' || this.loginForm.tab2 == '' || this.loginForm.remark == '' || this.loginForm.tag == '') {
         this.$message({
           message: '请您填写完整信息',
-          type: 'warning'
+          type: 'warning',
+          center: true
         });
         return
       }
@@ -309,17 +312,23 @@ export default {
         if (data.code == 200) {
           self.$message({
             message: '恭喜您！创建成功！',
-            type: 'success'
+            type: 'success',
+            center: true
           });
           self.$router.push({ path: '/activelist' })
         } else {
           self.$message({
             message: '创建活动失败！',
-            type: 'warning'
+            type: 'warning',
+            center: true
           });
         }
       }).catch(error => {
-        self.$message.error('对不起！创建失败！')
+        self.$message({
+          message: '创建活动失败！',
+          type: 'error',
+          center: true
+        });
       })
     },
   },

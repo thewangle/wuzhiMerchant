@@ -6,13 +6,14 @@
       <div class="vanNavBarRight"></div>
     </div>
     <div class="addSortbtWrap" v-if="isAddActives">
-      <el-button style="width:90%;" class="filter-item" type="primary" icon="el-icon-edit" @click="adduser()">添加活动</el-button>
+      <el-button style="width:90%;padding:10px 0;" class="filter-item" type="primary" icon="el-icon-edit" @click="adduser()">添加活动</el-button>
     </div>
     <div class="sortContentWrpa">
       <div class="sortListWrap" v-for="(item,index) in sortList">
         <div class="sortListB">
           <div class="goodsList">
-            <div class="biao">活动名称：
+            <div class="biao">
+              <span class="spanB">活动名称：</span>
               <span class="sortListSp yellow">{{ item.Merchant }}</span>
             </div>
             <div>示例起价：
@@ -43,7 +44,7 @@
         </div>
       </div>
     </div>
-    <el-dialog :visible.sync="dialogaddsort" title="编辑活动" style="width:80%;">
+    <el-dialog :visible.sync="dialogaddsort" title="编辑活动" style="width:80%;" :modal-append-to-body='false'>
       <div class="dialog_div">
         <span class="dialog_sp">活动名称</span>
         <el-input v-model="sorts.Merchant" placeholder="请输入活动名称" autocomplete="off"></el-input>
@@ -363,19 +364,8 @@ export default {
   text-align: center;
   margin-top: 30px;
 }
-.sortListWrap {
-  width: 90%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
-  border-bottom: 10px solid rgb(230,230,230);
-  margin:20px 0;
-}
 .sortListWrap:last-child{
-  margin-bottom: 90px;
+  margin-bottom: 30px;
 }
 .sortListB {
   width: 90%;

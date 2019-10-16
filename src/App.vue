@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
 }
 </script>
 
@@ -43,7 +43,7 @@ li {
 }
 .el-dialog {
   width: 80% !important;
-  border-radius: 10px;
+  border-radius: 15px;
 }
 .mint-header {
   background-image: linear-gradient( 153deg, rgb(255,215,0) 0%, rgb(10,200,30) 100%);
@@ -57,10 +57,32 @@ li {
   color: white;
   border-radius: 5px;
 }
+.sortListWrap {
+  width: 100%;
+  display: flex;
+  padding: 15px 0;
+  flex-direction: column;
+  align-items: center;
+  background: white;
+  border-bottom: 1px solid rgb(210,210,210);
+}
+.el-select__caret,.el-input__icon,.el-icon-arrow-up {
+  font-size: 17px !important; /*no*/
+}
+.el-input-group__append {
+  font-size: 13px; /*no*/
+}
+.el-message-box__btns {
+  margin-top: 20px;
+}
+.spanB {
+  display: inline-block;
+  width: 155px;
+}
 /*返回*/
 .vanNavBar {
   width: 100%;
-  height: 50px;
+  height: 100px;
   /*background: white;*/
   display: flex;
   justify-content: space-between;
@@ -69,7 +91,7 @@ li {
 .vanNavBarLeft {
   margin-left: 20px;
   color: #1296db;
-  font-size: 12px; /*no*/
+  font-size: 13px; /*no*/
   display: flex;
   align-items: center;
 }
@@ -79,7 +101,11 @@ li {
   margin-right: 10px;
 }
 .vanNavBarCenter {
-  font-size: 13px; /*no*/
+  font-size: 16px; /*no*/
+}
+.seleDiv {
+  width: 100%;
+  border-bottom: 1px solid rgb(230,230,230);
 }
 .vanNavBarRight {
   width: 100px;
@@ -93,6 +119,23 @@ li {
 }
 .mint-header-title {
   font-size: 15px !important; /*no*/
+}
+.mint-popup {
+  width: 100%;
+}
+.picker-item {
+  font-size: 14px; /*no*/
+}
+.selectBWrap {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+.selectBSpan {
+  font-size: 15px; /*no*/
+  display: inline-block;
+  color: #409EFF;
+  padding: 20px;
 }
 .goBack {
   width: 150px;
@@ -113,15 +156,15 @@ li {
   font-size: 15px !important;/*no*/
 }
 .el-textarea__inner {
-  font-size: 15px !important;/*no*/
-  color: #606266;
+  font-size: 13px !important;/*no*/
+  color: rgb(150,150,150);
 }
 .el-message-box {
   width: 80% !important;
   padding: 30px 0;
 }
 .el-message-box__message>p {
-  font-size: 14px !important;/*no*/
+  font-size: 13px !important;/*no*/
   padding: 5px 0;
 }
 .el-radio__inner,.el-checkbox__inner {
@@ -137,8 +180,15 @@ li {
   width:100%;
 }
 .biao {
-  font-size: 15px; /*no*/
+  font-size: 14px; /*no*/
   color: rgb(100,100,100);
+  display: flex;
+}
+.el-message {
+  padding: 30px 10px;
+}
+.el-message__content {
+  font-size: 13px !important; /*no*/
 }
 .red {
   color: #F56C6C;

@@ -100,14 +100,16 @@ export default {
       if (this.loginForm.username == '' || this.loginForm.password == '' || this.loginForm.department == '' || this.loginForm.phone == '' || this.loginForm.adminname == '') {
         this.$message({
           message: '请您填写完整信息',
-          type: 'warning'
+          type: 'warning',
+          center: true
         });
         return
       }
       if(!(/^1[3456789]\d{9}$/.test(this.loginForm.phone))){ 
           this.$message({
             message: '请您输入正确的手机号格式！',
-            type: 'warning'
+            type: 'warning',
+            center: true
           });
           return false; 
       } 
@@ -117,7 +119,8 @@ export default {
         if (item.username == this.username) {
           this.$message({
             message: '对不起！该用户已存在！',
-            type: 'warning'
+            type: 'warning',
+            center: true
           });
           is_by = false
         }
@@ -129,19 +132,29 @@ export default {
             if (data.code == 200) {
               self.$message({
                 message: '恭喜您！注册成功！',
-                type: 'success'
+                type: 'success',
+                center: true
               });
               self.$router.push({ path: '/userlist' })
             } else if(data.code == 202){
               self.$message({
                 message: '该用户名已经存在！',
-                type: 'warning'
+                type: 'warning',
+                center: true
               });
             } else {
-              self.$message.error('对不起！注册失败！')
+              self.$message({
+                message: '对不起！注册失败！',
+                type: 'warning',
+                center: true
+              });
             }
         }).catch(error => {
-          self.$message.error('对不起！创建失败！')
+          self.$message({
+            message: '对不起！注册失败！',
+            type: 'warning',
+            center: true
+          });
         })
       }
     },

@@ -47,35 +47,51 @@
           <span class="formB">商品售价</span>
           <el-input v-model="loginForm.outprice" placeholder="请输入商品售价" name="outprice" type="text" auto-complete="on"/>
         </div>
-        <div class="formName animated bounceInRight" style="margin-top: 20px;">
+        <!-- <div class="formName animated bounceInRight" style="margin-top: 20px;">
           <span class="formB">商品分类</span>
-          <el-select v-model="loginForm.sort" placeholder="请选择商品分类">
+          <el-select filterable v-model="loginForm.sort" placeholder="请选择商品分类" @change="selectted">
             <el-option
               v-for="item in sorts"
               :label="item.label"
               :value="item.value">
             </el-option>
           </el-select>
+        </div> -->
+        <div class="formName animated bounceInRight" style="margin-top: 20px;">
+          <span class="formB">商品分类</span>
+          <div class="seleDiv" @click="showSortSelect">{{ sortname }}</div>
         </div>
         <div class="formName animated bounceInRight" style="margin-top: 20px;">
           <span class="formB">供应商</span>
-          <el-select v-model="loginForm.supplier" placeholder="请选择供应商">
+          <div class="seleDiv" @click="showsupplierSelect">{{ suppliername }}</div>
+        </div>
+        <!-- <div class="formName animated bounceInRight" style="margin-top: 20px;">
+          <span class="formB">供应商</span>
+          <el-select filterable v-model="loginForm.supplier" placeholder="请选择供应商">
             <el-option
               v-for="item in suppliers"
               :label="item.label"
               :value="item.value">
             </el-option>
           </el-select>
-        </div>
+        </div> -->
         <div class="formName animated bounceInRight" style="margin-top: 20px;">
           <span class="formB">备注</span>
-          <el-input v-model="loginForm.remark" :rows="2" placeholder="请输入备注" name="remark" type="textarea" auto-complete="on"/>
+          <el-input v-model="loginForm.remark" ref="remarks" :rows="2" placeholder="请输入备注" name="remark" type="textarea"/>
         </div>
         <div class="formName animated bounceInUp" style="margin-top: 20px;">
           <button :disabled="is_login" class="bubbly-button" @click="addgoods">{{ logins }}</button>
         </div>
       </div>
     </div>
+    <mt-popup v-model="popupVisible" position="bottom">
+      <div class="selectBWrap"><span class="selectBSpan" @click="selectqr">确定</span></div>
+      <mt-picker :slots="sorts" @change="onValuesChange" value-key="name"></mt-picker>
+    </mt-popup>
+    <mt-popup v-model="popupsupplier" position="bottom">
+      <div class="selectBWrap"><span class="selectBSpan" @click="selectqr1">确定</span></div>
+      <mt-picker :slots="suppliers" @change="onValuesChange1" value-key="name"></mt-picker>
+    </mt-popup>
   </div>
 </template>
 
@@ -96,6 +112,10 @@ export default {
   },
   data () {
     return {
+      suppliername: '请选择供应商',
+      sortname: '请选择商品分类',
+      popupVisible: false,
+      popupsupplier: false,
       is_login: false,
       logins: '提 交',
       loginForm: {
@@ -114,11 +134,47 @@ export default {
         pid: getpartantId(),
         role: getRoleId(),
       },
-      sorts: [],
-      suppliers: [],
+      sorts: [
+        {
+          flex: 1,
+          values: [{value: 0,name: '请选择商品分类'}],
+          className: 'slot1',
+          textAlign: 'center',
+          defaultIndex:0
+        }
+      ],
+      suppliers: [
+        {
+          flex: 1,
+          values: [{value: 0,name: '请选择供应商'}],
+          className: 'slot1',
+          textAlign: 'center',
+          defaultIndex:0
+        }
+      ],
     }
   },
   methods: {
+    selectqr() {
+      this.popupVisible = !this.popupVisible
+    },
+    selectqr1() {
+      this.popupsupplier = !this.popupsupplier
+    },
+    showSortSelect() {
+      this.popupVisible = !this.popupVisible
+    },
+    showsupplierSelect() {
+      this.popupsupplier = !this.popupsupplier
+    },
+    onValuesChange(picker, values) {
+      this.loginForm.sort = values[0].value
+      this.sortname = values[0].name
+    },
+    onValuesChange1(picker, values) {
+      this.loginForm.supplier = values[0].value
+      this.suppliername = values[0].name
+    },
     //根据用户id获取分类
     getsortinfoall() {
       let params = {
@@ -129,7 +185,7 @@ export default {
       getSortinfoall(params).then(res => {
         let { data } = res
         data.forEach((item) => {
-          this.sorts.push({value: item.id,label: item.name})
+          this.sorts[0].values.push({value: item.id,name: item.name})
         })
       }).catch(error => {
         console.log(error)
@@ -145,7 +201,7 @@ export default {
       getSupplierall(params).then(res => {
         let { data } = res
         data.forEach((item) => {
-          this.suppliers.push({value: item.id,label: item.name})
+          this.suppliers[0].values.push({value: item.id,name: item.name})
         })
       }).catch(error => {
         console.log(error)
@@ -163,7 +219,8 @@ export default {
       if (this.loginForm.name == '' || this.loginForm.inprice == '' || this.loginForm.outprice == '' || this.loginForm.nums == '' || this.loginForm.format == '' || this.loginForm.sort == '' || this.loginForm.supplier == '') {
         this.$message({
           message: '请您填写完整信息',
-          type: 'warning'
+          type: 'warning',
+          center: true
         });
         return
       }
@@ -171,21 +228,24 @@ export default {
       if (!is_num.test(this.loginForm.nums) || !is_num.test(this.loginForm.maxnums) || !is_num.test(this.loginForm.minnums)) {
         this.$message({
           message: '请您输入正确的数量',
-          type: 'warning'
+          type: 'warning',
+          center: true
         });
         return
       }
       if (Number(this.loginForm.maxnums) < Number(this.loginForm.minnums)) {
         this.$message({
           message: '库存上线不得小于库存下线',
-          type: 'warning'
+          type: 'warning',
+          center: true
         });
         return
       }
       if (Number(this.loginForm.outprice) < Number(this.loginForm.inprice)) {
         this.$message({
           message: '售价不得小于进价',
-          type: 'warning'
+          type: 'warning',
+          center: true
         });
         return
       }
@@ -195,14 +255,23 @@ export default {
         if (data.code == 200) {
           self.$message({
             message: '恭喜您！添加商品成功！',
-            type: 'success'
+            type: 'success',
+            center: true
           });
           self.$router.push({ path: '/goodslist' })
         } else {
-          self.$message.error('对不起！添加商品失败！')
+          self.$message({
+            message: '对不起！添加商品失败！',
+            type: 'success',
+            center: true
+          });
         }
       }).catch(error => {
-        self.$message.error('对不起！添加商品失败！')
+        self.$message({
+          message: '对不起！添加商品失败！',
+          type: 'success',
+          center: true
+        });
       })
     },
   },

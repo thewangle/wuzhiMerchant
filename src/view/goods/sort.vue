@@ -11,7 +11,7 @@
         <el-button type="success" icon="el-icon-search" @click="handleFilter">查询</el-button>
       </div>
       <div class="addSortbtWrap">
-        <el-button style="width:90%;" class="filter-item" type="primary" icon="el-icon-edit" @click="addsort(0)">添加分类</el-button>
+        <el-button style="width:90%;padding:10px 0;" class="filter-item" type="primary" icon="el-icon-edit" @click="addsort(0)">添加分类</el-button>
       </div>
       <div class="sortListWrap" v-for="(item,index) in sortList">
         <div class="sortListB">
@@ -24,7 +24,7 @@
         </div>
       </div>
     </div>
-    <el-dialog :visible.sync="dialogaddsort" title="添加分类">
+    <el-dialog :visible.sync="dialogaddsort" title="添加分类" :modal-append-to-body='false'>
       <div class="dialog_div">
         <span class="dialog_sp">分类名称</span>
         <el-input v-model="sorts.name" placeholder="请输入分类名称" autocomplete="off"></el-input>
@@ -98,7 +98,8 @@ export default {
       if (this.sorts.name == '') {
         this.$message({
           message: '请您填写分类名称',
-          type: 'warning'
+          type: 'warning',
+          center: true
         });
         return
       }
@@ -108,15 +109,24 @@ export default {
           if (data.code == 200) {
             this.$message({
               message: '恭喜您！添加成功！',
-              type: 'success'
+              type: 'success',
+              center: true
             });
             this.dialogaddsort = false
           } else {
-            this.$message.error('对不起！添加失败！')
+            this.$message({
+              message: '对不起！添加失败！',
+              type: 'error',
+              center: true
+            });
             this.dialogaddsort = false
           }
         }).catch(error => {
-          this.$message.error('对不起！添加失败！')
+          this.$message({
+            message: '对不起！添加失败！',
+            type: 'error',
+            center: true
+          });
           this.dialogaddsort = false
         })
       }
@@ -130,10 +140,15 @@ export default {
         this.dialogaddsort = false
         this.$message({
           type: 'success',
-          message: res.data.message
+          message: res.data.message,
+          center: true
         });
       }).catch(error => {
-        this.$message('编辑分类信息失败!')
+        this.$message({
+          message: '编辑分类信息失败!',
+          type: 'error',
+          center: true
+        });
       })
     },
     //点击删除
@@ -150,11 +165,16 @@ export default {
         deleteSort(data).then(res => {
           this.$message({
             type: 'success',
-            message: res.data.message
+            message: res.data.message,
+            center: true
           });
           this.handleFilter()
         }).catch(error => {
-          this.$message('删除失败')
+          this.$message({
+            type: 'error',
+            message: '删除失败！',
+            center: true
+          });
         })
       }).catch(() => {
 
@@ -188,7 +208,11 @@ export default {
           if (query == 1) {
             let newsortList = this.sortList.concat(data.data.data)
             if (data.data.data == '') {
-              this.$message('没有更多分类!')
+              this.$message({
+                type: 'error',
+                message: '没有更多分类！',
+                center: true
+              });
               this.listQuery.page_no -= 1
             }
             this.sortList = newsortList
@@ -199,12 +223,20 @@ export default {
         if (data.code == 201) {
           this.sortList = []
           Indicator.close()
-          this.$message('没有更多分类!')
+          this.$message({
+            type: 'error',
+            message: '没有更多分类！',
+            center: true
+          });
         }
       }).catch(error => {
         this.sortList = []
         Indicator.close()
-        this.$message('获取分类信息失败！')
+        this.$message({
+          type: 'error',
+          message: '没有更多分类！',
+          center: true
+        });
       })
     },
   },
@@ -214,9 +246,7 @@ export default {
 <style scoped>
 .loginWrap {
   width: 100%;
-  height: 100%; 
-  /*background-image: linear-gradient( 153deg, rgb(10,100,10) 0%, rgb(100,2,30) 100%);*/
-  background: rgb(240,240,240);
+  height: 100%;
   background: white;
   color: rgb(140,140,140);
   -webkit-overflow-scrolling: touch;
@@ -239,23 +269,8 @@ export default {
 }
 .addSortbtWrap {
   width:100%;
-  /*position:fixed;
-  bottom:30px;
-  left:0;*/
   margin-bottom: 30px;
   text-align: center;
-}
-.sortListWrap {
-  width: 90%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
-  border-bottom: 10px solid rgb(230,230,230);
-  /*background-image: linear-gradient( 153deg, rgb(255,255,255) 0%, rgb(230,230,230) 100%);*/
-  margin:20px 0;
 }
 .sortListWrap:last-child{
   margin-bottom: 30px;

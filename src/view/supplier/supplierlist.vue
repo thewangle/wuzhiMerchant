@@ -15,13 +15,14 @@
           <el-input v-model="listQuery.phone" placeholder="请输入供应商手机号" @keyup.enter.native="handleFilter"/>
         </div>
         <div>
-          <el-button type="success" icon="el-icon-search" @click="handleFilter" style="margin-top:10px;">查询</el-button>
+          <el-button type="success" icon="el-icon-search" @click="handleFilter" style="margin-top:10px;width:100%;padding:10px 0;">查询</el-button>
         </div>
       </div>
       <div class="sortListWrap" v-for="(item,index) in sortList">
         <div class="sortListB">
           <div class="goodsList">
-            <div class="biao">供应商：
+            <div class="biao">
+              <span class="spanB">供应商：</span>
               <span class="sortListSp yellow">{{ item.name }}</span>
             </div>
             <div>电话：
@@ -49,7 +50,7 @@
         </div>
       </div>
     </div>
-    <el-dialog :visible.sync="dialogaddsort" title="编辑商品" style="width:80%;">
+    <el-dialog :visible.sync="dialogaddsort" title="编辑供应商" style="width:80%;" :modal-append-to-body='false'>
       <div class="dialog_div">
         <span class="dialog_sp">供应商名称</span>
         <el-input v-model="sorts.name" placeholder="请输入供应商名称" autocomplete="off"></el-input>
@@ -139,7 +140,8 @@ export default {
       if(!(/^1[3456789]\d{9}$/.test(this.sorts.phone))){ 
           this.$message({
             message: '请您输入正确的手机号格式！',
-            type: 'warning'
+            type: 'warning',
+            center: true
           });
           return false; 
       }
@@ -151,10 +153,15 @@ export default {
         this.dialogaddsort = false
         this.$message({
           type: 'success',
-          message: res.data.message
+          message: res.data.message,
+          center: true
         })
       }).catch(error => {
-        this.$message('编辑供应商信息失败!')
+        this.$message({
+          type: 'error',
+          message: '编辑供应商信息失败！',
+          center: true
+        })
       })
     },
     //点击删除
@@ -171,11 +178,16 @@ export default {
         deleteSupplier(data).then(res => {
           this.$message({
             type: 'success',
-            message: res.data.message
+            message: res.data.message,
+            center: true
           });
           this.handleFilter()
         }).catch(error => {
-          this.$message('删除失败')
+          this.$message({
+            type: 'error',
+            message: '删除失败！',
+            center: true
+          })
         })
       }).catch(() => {
 
@@ -209,7 +221,11 @@ export default {
           if (query == 1) {
             let newsortList = this.sortList.concat(data.data.data)
             if (data.data.data == '') {
-              this.$message('没有更多供应商!')
+              this.$message({
+                type: 'error',
+                message: '没有更多供应商!',
+                center: true
+              })
               this.listQuery.page_no -= 1
             }
             this.sortList = newsortList
@@ -220,12 +236,20 @@ export default {
         if (data.code == 201) {
           this.sortList = []
           Indicator.close()
-          this.$message('没有更多供应商!')
+          this.$message({
+            type: 'error',
+            message: '没有更多供应商!',
+            center: true
+          })
         }
       }).catch(error => {
         this.sortList = []
         Indicator.close()
-        this.$message('获取供应商信息失败！')
+        this.$message({
+          type: 'error',
+          message: '没有更多供应商!',
+          center: true
+        })
       })
     },
   },
@@ -256,10 +280,7 @@ export default {
   flex-direction: column;
   align-items: center;
   background: white;
-  margin-top: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
-  border-bottom: 10px solid rgb(230,230,230);
+  border-bottom: 1px solid rgb(230,230,230);
 }
 .subWrapGoodslist>div {
   width: 90%;
@@ -275,19 +296,8 @@ export default {
   left:0;
   text-align: center;
 }
-.sortListWrap {
-  width: 90%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
-  border-bottom: 10px solid rgb(230,230,230);
-  margin:20px 0;
-}
 .sortListWrap:last-child{
-  margin-bottom: 90px;
+  margin-bottom: 30px;
 }
 .sortListB {
   width: 90%;

@@ -30,3 +30,9 @@ export function deletUser(params) {
   return axios.post(url,params)
 }
 
+//更新编辑用户到期时间
+export function renewalFee(params) {
+  let url = process.env.BASE_API + 'yii2/frontend/web/?r=login/renewalfee'
+  return axios.post(url,params)
+}
+
