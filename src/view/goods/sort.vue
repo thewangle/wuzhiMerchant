@@ -13,7 +13,11 @@
       <div class="addSortbtWrap">
         <el-button style="width:90%;padding:10px 0;" class="filter-item" type="primary" icon="el-icon-edit" @click="addsort(0)">添加分类</el-button>
       </div>
-      <div class="sortListWrap" v-for="(item,index) in sortList">
+      <div class="noDate" v-show="!isShowList">
+        <img src="../../assets/img/nodata.jpg" alt="" class="nodataImg">
+        <span class="nodataSpan">暂无数据</span>
+      </div>
+      <div class="sortListWrap" v-show="isShowList" v-for="(item,index) in sortList">
         <div class="sortListB">
           <span class="sortListSp biao yellow">分类名称：{{ item.name }}</span>
           <div class="myBtn" @click="addsort(1,index)">编辑</div>
@@ -62,6 +66,7 @@ export default {
   },
   data () {
     return {
+      isShowList: true,
       loading: false,
       dialogaddsort: false,
       listQuery: { //动态请求table数据时传递的参数
@@ -204,6 +209,7 @@ export default {
       getSortinfo(this.listQuery).then(res => {
         let { data } = res
         if (data.code == 200) {
+          this.isShowList = true
           Indicator.close()
           if (query == 1) {
             let newsortList = this.sortList.concat(data.data.data)
@@ -217,10 +223,19 @@ export default {
             }
             this.sortList = newsortList
           } else {
+            if (data.data.data == '') {
+              this.isShowList = false
+              this.$message({
+                type: 'error',
+                message: '没有更多分类！',
+                center: true
+              });
+            }
             this.sortList = data.data.data
           }
         }
         if (data.code == 201) {
+          this.isShowList = false
           this.sortList = []
           Indicator.close()
           this.$message({
@@ -230,6 +245,7 @@ export default {
           });
         }
       }).catch(error => {
+        this.isShowList = false
         this.sortList = []
         Indicator.close()
         this.$message({

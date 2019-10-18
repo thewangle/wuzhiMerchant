@@ -79,6 +79,23 @@ li {
   display: inline-block;
   width: 155px;
 }
+.noDate {
+  width: 100%;
+  height: 600px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.nodataImg {
+  width: 200px;
+  height: 200px;
+}
+.nodataSpan {
+  color: rgba(180,180,180);
+  font-size: 16px;
+  font-weight: bold;
+}
 /*返回*/
 .vanNavBar {
   width: 100%;

@@ -28,7 +28,11 @@
           <el-button type="success" icon="el-icon-search" @click="handleFilter" style="margin-top:10px;width:100%;padding:10px 0;">查询</el-button>
         </div>
       </div>
-      <div class="sortListWrap" v-for="(item,index) in sortList">
+      <div class="noDate" v-show="!isShowList">
+        <img src="../../assets/img/nodata.jpg" alt="" class="nodataImg">
+        <span class="nodataSpan">暂无数据</span>
+      </div>
+      <div class="sortListWrap" v-show="isShowList" v-for="(item,index) in sortList">
         <div class="sortListB">
           <div class="goodsList">
             <div class="biao">
@@ -72,7 +76,7 @@
         <span class="dialog_sp">出售数量</span>
         <el-input v-model="sorts.changenums" placeholder="请输入出售数量" name="changenums" type="text" auto-complete="on" @input="change($event)"></el-input>
       </div>
-      <div class="dialog_div">
+      <!-- <div class="dialog_div">
         <span class="dialog_sp">出售日期</span>
         <el-select style="width:100%;" clearable v-model="sorts.date" placeholder="请选择出售日期">
           <el-option v-for="item in dates" :label="item.label" :value="item.value"/>
@@ -83,14 +87,14 @@
         <el-select style="width:100%;" clearable v-model="sorts.time" placeholder="请选择出售日期">
           <el-option v-for="item in times" :label="item.label" :value="item.value"/>
         </el-select>
-      </div>
+      </div> -->
       <div class="dialog_div">
         <span class="dialog_sp">商品进价</span>
-        <el-input v-model="sorts.inprice" placeholder="请输入库存上线" autocomplete="off"></el-input>
+        <el-input disabled v-model="sorts.inpricenow" placeholder="请输入商品进价" autocomplete="off"></el-input>
       </div>
       <div class="dialog_div">
         <span class="dialog_sp">商品售价</span>
-        <el-input v-model="sorts.outprice" placeholder="请输入库存下线" autocomplete="off"></el-input>
+        <el-input disabled v-model="sorts.outpricenow" placeholder="请输入商品售价" autocomplete="off"></el-input>
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogaddsort = false">取 消</el-button>
@@ -103,7 +107,7 @@
         <span class="dialog_sp">报损数量</span>
         <el-input v-model="sorts.changenums" @input="change($event)" placeholder="请输入商品规格" autocomplete="off"></el-input>
       </div>
-      <div class="dialog_div">
+      <!-- <div class="dialog_div">
         <span class="dialog_sp">报损日期</span>
         <el-select style="width:100%;" clearable v-model="sorts.date" placeholder="请选择报损日期">
           <el-option v-for="item in dates" :label="item.label" :value="item.value"/>
@@ -114,14 +118,14 @@
         <el-select style="width:100%;" clearable v-model="sorts.time" placeholder="请选择报损日期">
           <el-option v-for="item in times" :label="item.label" :value="item.value"/>
         </el-select>
-      </div>
+      </div> -->
       <div class="dialog_div">
         <span class="dialog_sp">商品进价</span>
-        <el-input v-model="sorts.inprice" placeholder="请输入库存上线" autocomplete="off"></el-input>
+        <el-input disabled v-model="sorts.inpricenow" placeholder="请输入商品进价" autocomplete="off"></el-input>
       </div>
       <div class="dialog_div">
         <span class="dialog_sp">商品售价</span>
-        <el-input v-model="sorts.outprice" placeholder="请输入库存下线" autocomplete="off"></el-input>
+        <el-input disabled v-model="sorts.outpricenow" placeholder="请输入商品售价" autocomplete="off"></el-input>
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogaddsort1 = false">取 消</el-button>
@@ -149,6 +153,7 @@ export default {
   },
   data () {
     return {
+      isShowList: true,
       loading: false,
       dialogaddsort: false,
       dialogaddsort1: false,
@@ -253,22 +258,16 @@ export default {
       this.sorts = this.sortList[index]
       this.sorts.changenums = 1
       this.sorts.numtype = 1
+      this.sorts.inpricenow = this.sortList[index].inprice
+      this.sorts.outpricenow = this.sortList[index].outprice
       this.dialogaddsort = true
     },
     //出售商品
     addsortsubmit(num) {
       //验证表单是否填写完整
-      if (this.sorts.changenums == '' || this.sorts.numtype == '' || this.sorts.date == '' || this.sorts.time == '' || this.sorts.inpricenow == '' || this.sorts.outpricenow == '') {
+      if (this.sorts.changenums == '' || this.sorts.numtype == '' || this.sorts.inpricenow == '' || this.sorts.outpricenow == '') {
         this.$message({
           message: '请您填写完整信息',
-          type: 'warning',
-          center: true
-        });
-        return
-      }
-      if (!this.sorts.date || !this.sorts.time) {
-        this.$message({
-          message: '请您选择日期和时间',
           type: 'warning',
           center: true
         });
@@ -300,6 +299,8 @@ export default {
     //报损商品
     copyTask(index) {
       this.sorts = this.sortList[index]
+      this.sorts.inpricenow = this.sortList[index].inprice
+      this.sorts.outpricenow = this.sortList[index].outprice
       this.sorts.changenums = 1
       this.sorts.numtype = 3
       this.dialogaddsort1 = true
@@ -328,6 +329,7 @@ export default {
       getGoodsinfo(this.listQuery).then(res => {
         let { data } = res
         if (data.code == 200) {
+          this.isShowList = true
           Indicator.close()
           if (query == 1) {
             let newsortList = this.sortList.concat(data.data.data)
@@ -341,10 +343,19 @@ export default {
             }
             this.sortList = newsortList
           } else {
+            if (data.data.data == '') {
+              this.isShowList = false
+              this.$message({
+                type: 'error',
+                message: '没有更多商品！',
+                center: true
+              });
+            }
             this.sortList = data.data.data
           }
         }
         if (data.code == 201) {
+          this.isShowList = false
           this.sortList = []
           Indicator.close()
           this.$message({
@@ -354,6 +365,7 @@ export default {
           });
         }
       }).catch(error => {
+        this.isShowList = false
         this.sortList = []
         Indicator.close()
         this.$message({

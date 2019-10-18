@@ -9,7 +9,11 @@
       <el-button style="width:90%;padding:10px 0;" class="filter-item" type="primary" icon="el-icon-edit" @click="adduser()">添加活动</el-button>
     </div>
     <div class="sortContentWrpa">
-      <div class="sortListWrap" v-for="(item,index) in sortList">
+      <div class="noDate" v-show="!isShowList">
+        <img src="../../assets/img/nodata.jpg" alt="" class="nodataImg">
+        <span class="nodataSpan">暂无数据</span>
+      </div>
+      <div class="sortListWrap" v-show="isShowList" v-for="(item,index) in sortList">
         <div class="sortListB">
           <div class="goodsList">
             <div class="biao">
@@ -105,6 +109,7 @@ export default {
   },
   data () {
     return {
+      isShowList: true,
       isAddActives: true,
       loading: false,
       dialogaddsort: false,
@@ -301,6 +306,7 @@ export default {
       getallactivesbyid(this.listQuery).then(res => {
         let { data } = res
         if (data.code == 200) {
+          this.isShowList = true
           Indicator.close()
           this.sortList = data.data
           if (this.sortList.lenght > 5) {
@@ -308,11 +314,13 @@ export default {
           }
         }
         if (data.code == 201) {
+          this.isShowList = false
           this.sortList = []
           Indicator.close()
           this.$message('没有更多活动信息!')
         }
       }).catch(error => {
+        this.isShowList = false
         this.sortList = []
         Indicator.close()
         this.$message('获取活动信息失败！')

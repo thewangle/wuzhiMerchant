@@ -28,7 +28,11 @@
           <el-button type="success" icon="el-icon-search" @click="handleFilter" style="margin-top:10px;width:100%;padding:10px 0;">查询</el-button>
         </div>
       </div>
-      <div class="sortListWrap" v-for="(item,index) in sortList">
+      <div class="noDate" v-show="!isShowList">
+        <img src="../../assets/img/nodata.jpg" alt="" class="nodataImg">
+        <span class="nodataSpan">暂无数据</span>
+      </div>
+      <div class="sortListWrap" v-show="isShowList" v-for="(item,index) in sortList">
         <div class="sortListB">
           <div class="goodsList">
             <div class="biao">
@@ -45,7 +49,7 @@
               <span class="sortListSp yellow">{{ item.nums }}</span>
             </div>
           </div>
-          <div class="myBtn" @click="addsort(index)">入库</div>
+          <div class="myBtn" @click="addsort(index)">补货</div>
         </div>
         <div class="sortListB">
           <div class="goodsList">
@@ -69,28 +73,16 @@
     <!-- 出售商品 -->
     <el-dialog :visible.sync="dialogaddsort" title="商品入库" style="width:80%;" :modal-append-to-body='false'>
       <div class="dialog_div">
-        <span class="dialog_sp">入库数量</span>
+        <span class="dialog_sp">补货数量</span>
         <el-input v-model="sorts.changenums" @input="change($event)" placeholder="请输入商品规格" autocomplete="off"></el-input>
       </div>
       <div class="dialog_div">
-        <span class="dialog_sp">入库日期</span>
-        <el-select style="width:100%;" clearable v-model="sorts.date" placeholder="请选择出售日期">
-          <el-option v-for="item in dates" :label="item.label" :value="item.value"/>
-        </el-select>
-      </div>
-      <div class="dialog_div">
-        <span class="dialog_sp">入库时间</span>
-        <el-select style="width:100%;" clearable v-model="sorts.time" placeholder="请选择出售日期">
-          <el-option v-for="item in times" :label="item.label" :value="item.value"/>
-        </el-select>
-      </div>
-      <div class="dialog_div">
         <span class="dialog_sp">商品进价</span>
-        <el-input v-model="sorts.inprice" placeholder="请输入库存上线" autocomplete="off"></el-input>
+        <el-input disabled v-model="sorts.inpricenow" placeholder="请输入库存上线" autocomplete="off"></el-input>
       </div>
       <div class="dialog_div">
         <span class="dialog_sp">商品售价</span>
-        <el-input v-model="sorts.outprice" placeholder="请输入库存下线" autocomplete="off"></el-input>
+        <el-input disabled v-model="sorts.outpricenow" placeholder="请输入库存下线" autocomplete="off"></el-input>
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogaddsort = false">取 消</el-button>
@@ -104,24 +96,12 @@
         <el-input v-model="sorts.changenums" @input="change($event)" placeholder="请输入商品规格" autocomplete="off"></el-input>
       </div>
       <div class="dialog_div">
-        <span class="dialog_sp">退货日期</span>
-        <el-select style="width:100%;" clearable v-model="sorts.date" placeholder="请选择报损日期">
-          <el-option v-for="item in dates" :label="item.label" :value="item.value"/>
-        </el-select>
-      </div>
-      <div class="dialog_div">
-        <span class="dialog_sp">退货时间</span>
-        <el-select style="width:100%;" clearable v-model="sorts.time" placeholder="请选择报损日期">
-          <el-option v-for="item in times" :label="item.label" :value="item.value"/>
-        </el-select>
-      </div>
-      <div class="dialog_div">
         <span class="dialog_sp">商品进价</span>
-        <el-input v-model="sorts.inprice" placeholder="请输入库存上线" autocomplete="off"></el-input>
+        <el-input disabled v-model="sorts.inpricenow" placeholder="请输入库存上线" autocomplete="off"></el-input>
       </div>
       <div class="dialog_div">
         <span class="dialog_sp">商品售价</span>
-        <el-input v-model="sorts.outprice" placeholder="请输入库存下线" autocomplete="off"></el-input>
+        <el-input disabled v-model="sorts.outpricenow" placeholder="请输入库存下线" autocomplete="off"></el-input>
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogaddsort1 = false">取 消</el-button>
@@ -149,6 +129,7 @@ export default {
   },
   data () {
     return {
+      isShowList: true,
       loading: false,
       dialogaddsort: false,
       dialogaddsort1: false,
@@ -250,6 +231,8 @@ export default {
     //入库商品
     addsort(index) {
       this.sorts = this.sortList[index]
+      this.sorts.inpricenow = this.sortList[index].inprice
+      this.sorts.outpricenow = this.sortList[index].outprice
       this.sorts.changenums = 1
       this.sorts.numtype = 4
       this.dialogaddsort = true
@@ -257,17 +240,9 @@ export default {
     //入库商品提交
     addsortsubmit(num) {
       //验证表单是否填写完整
-      if (this.sorts.changenums == '' || this.sorts.numtype == '' || this.sorts.date == '' || this.sorts.time == '' || this.sorts.inpricenow == '' || this.sorts.outpricenow == '') {
+      if (this.sorts.changenums == '' || this.sorts.numtype == '' || this.sorts.inpricenow == '' || this.sorts.outpricenow == '') {
         this.$message({
           message: '请您填写完整信息',
-          type: 'warning',
-          center: true
-        });
-        return
-      }
-      if (!this.sorts.date || !this.sorts.time) {
-        this.$message({
-          message: '请您选择日期和时间',
           type: 'warning',
           center: true
         });
@@ -299,6 +274,8 @@ export default {
     //报损商品
     copyTask(index) {
       this.sorts = this.sortList[index]
+      this.sorts.inpricenow = this.sortList[index].inprice
+      this.sorts.outpricenow = this.sortList[index].outprice
       this.sorts.changenums = 1
       this.sorts.numtype = 2
       this.dialogaddsort1 = true
@@ -327,6 +304,7 @@ export default {
       getGoodsinfo(this.listQuery).then(res => {
         let { data } = res
         if (data.code == 200) {
+          this.isShowList = true
           Indicator.close()
           if (query == 1) {
             let newsortList = this.sortList.concat(data.data.data)
@@ -340,10 +318,19 @@ export default {
             }
             this.sortList = newsortList
           } else {
+            if (data.data.data == '') {
+              this.isShowList = false
+              this.$message({
+                type: 'error',
+                message: '没有更多商品！',
+                center: true
+              });
+            }
             this.sortList = data.data.data
           }
         }
         if (data.code == 201) {
+          this.isShowList = false
           this.sortList = []
           Indicator.close()
           this.$message({
@@ -353,6 +340,7 @@ export default {
           });
         }
       }).catch(error => {
+        this.isShowList = false
         this.sortList = []
         Indicator.close()
         this.$message({
