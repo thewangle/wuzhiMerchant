@@ -5,6 +5,12 @@
       <div class="vanNavBarCenter" style="color:black;">价格更改</div>
       <div class="vanNavBarRight"></div>
     </div>
+    <div class="hellpWrap" @click="popupVisible = true">
+      <div class="hellpWrap1">
+        <img src="../../assets/img/hellp.png" alt="" class="hellpImg">
+        <span class="hellpB">使用帮助</span>
+      </div>
+    </div>
     <div class="sortContentWrpa">
       <div class="subWrapGoodslist">
         <div style="font-size:17px;">条件筛选</div>
@@ -70,13 +76,13 @@
         </div>
       </div>
     </div>
-    <!-- 出售商品 -->
-    <el-dialog :visible.sync="dialogaddsort" title="商品进价更改" style="width:80%;" :modal-append-to-body='false'>
+    <!-- 更改进价 -->
+    <el-dialog :visible.sync="dialogaddsort" title="商品进价更改" style="width:80%;" :modal-append-to-body='false' @close="tcclose">
       <div class="dialog_div">
         <span class="dialog_sp">商品进价</span>
         <el-input v-model="sorts.inprice" placeholder="请输入库存上线" autocomplete="off"></el-input>
       </div>
-      <div class="dialog_div">
+      <div class="dialog_div" @click="changePrice">
         <span class="dialog_sp">商品售价</span>
         <el-input disabled v-model="sorts.outprice" placeholder="请输入库存下线" autocomplete="off"></el-input>
       </div>
@@ -85,9 +91,9 @@
         <el-button type="primary" @click="addsortsubmit(0)">确 定</el-button>
       </div>
     </el-dialog>
-    <!-- 报损商品 -->
-    <el-dialog :visible.sync="dialogaddsort1" title="商品售价更改" style="width:80%;" :modal-append-to-body='false'>
-      <div class="dialog_div">
+    <!-- 更改售价 -->
+    <el-dialog :visible.sync="dialogaddsort1" title="商品售价更改" style="width:80%;" :modal-append-to-body='false' @close="tcclose">
+      <div class="dialog_div" @click="changePrice1">
         <span class="dialog_sp">商品进价</span>
         <el-input disabled v-model="sorts.inprice" placeholder="请输入库存上线" autocomplete="off"></el-input>
       </div>
@@ -100,6 +106,33 @@
         <el-button type="primary" @click="addsortsubmit(1)">确 定</el-button>
       </div>
     </el-dialog>
+    <mt-popup v-model="popupVisible" position="right">
+      <div class="hellpContent">
+        <div class="hellepB" @click="popupVisible = false"><span class="hellepBB">价格调整页 - 使用帮助</span><span class="hellepBBB">X</span></div>
+        <div class="hellepDiv smB">概述：此页为商品的"更改进价"、"更改售价"的价格调整操作</div>
+        <div class="smContent">
+          <span class="smContentB">条件筛选：</span>
+          <div class="smContentC">
+            <div>1.支持按"商品名称"、"商品编码"、"分类"、"供应商"筛选搜索</div>
+            <div>2.默认筛选条件均为空，即展示全部</div>
+          </div>
+        </div>
+        <div class="smContent">
+          <span class="smContentB">商品列表：</span>
+          <div class="smContentC">
+            <div>1.展示账号下的所有商品</div>
+            <div>2.点击"更改进价"会弹出"更改进价"对话框，对该商品进行更改进价操作</div>
+            <div>3.点击"更改售价"会弹出"更改售价"对话框，对该商品进行更改售价操作</div>
+          </div>
+        </div>
+        <div class="smContent">
+          <span class="smContentB smContentBb">备注：</span>
+          <div class="smContentC smContentCc">
+            <div>支持下拉加载（即：拉到页面底部会加载更多信息）</div>
+          </div>
+        </div>
+      </div>
+    </mt-popup>
   </div>
 </template>
 
@@ -149,6 +182,26 @@ export default {
     }
   },
   methods: {
+    //点击更改进/售价
+    changePrice() {
+      this.$notify({
+        title: '提示',
+        message: '请您点击"更改售价"进行售价更改！',
+        type: 'warning'
+      });
+    },
+    //点击更改进/售价
+    changePrice1() {
+      this.$notify({
+        title: '提示',
+        message: '请您点击"更改进价"进行进价更改！',
+        type: 'warning'
+      });
+    },
+    //关闭进/售价格更改弹窗回调函数
+    tcclose() {
+      this._fetchActivityList(0) //重新获取数据
+    },
     //根据用户id获取分类
     getsortinfoall() {
       let params = {

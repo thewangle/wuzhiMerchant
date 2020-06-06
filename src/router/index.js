@@ -17,6 +17,8 @@ import adduser from '../view/user/adduser'
 import userindex from '../view/userIndex'
 import activelist from '../view/active/activelist'
 import addactive from '../view/active/addactive'
+import report from '../view/report/report'
+import most from '../view/report/most'
 
 Vue.use(Router)
 
@@ -108,6 +110,16 @@ export default new Router({
       path: '/addactive',
       name: 'addactive',
       component: addactive
+    },
+    {
+      path: '/most',
+      name: 'most',
+      component: most
+    },
+    {
+      path: '/report',
+      name: 'report',
+      component: report
     },
   ]
 })

@@ -5,6 +5,12 @@
       <div class="vanNavBarCenter" style="color:black;">账号列表</div>
       <div class="vanNavBarRight"></div>
     </div>
+    <div class="hellpWrap" @click="popupVisible = true">
+      <div class="hellpWrap1">
+        <img src="../../assets/img/hellp.png" alt="" class="hellpImg">
+        <span class="hellpB">使用帮助</span>
+      </div>
+    </div>
     <div class="sortContentWrpa">
       <div class="subWrapGoodslist">
         <div style="font-size:17px;">条件筛选</div>
@@ -90,6 +96,34 @@
         <el-button type="primary" @click="renewalfeebt">确 定</el-button>
       </div>
     </el-dialog>
+    <mt-popup v-model="popupVisible" position="right">
+      <div class="hellpContent">
+        <div class="hellepB" @click="popupVisible = false"><span class="hellepBB">账号列表 - 使用帮助</span><span class="hellepBBB">X</span></div>
+        <div class="hellepDiv smB">概述：此页为账号的添加与编辑页</div>
+        <div class="smContent">
+          <span class="smContentB">条件筛选：</span>
+          <div class="smContentC">
+            <div>1.支持输入"用户名"精准搜索</div>
+            <div>2.点击"添加账号"将跳转至账号添加页</div>
+          </div>
+        </div>
+        <div class="smContent">
+          <span class="smContentB">账号列表：</span>
+          <div class="smContentC">
+            <div>1.展示账号下的所有下级账号</div>
+            <div>2.点击"编辑"会弹出"账号编辑"对话框，对该账号进行编辑（"用户名"不可更改）</div>
+            <div>3.点击"续费"会弹出续费对话框，填写续费年限，点击"确定"会提交续费申请</div>
+            <div>4.点击"删除"会弹出"是否删除该账号"提示框，"取消"将不删除该会员，"确定"会永久删除该会员</div>
+          </div>
+        </div>
+        <div class="smContent">
+          <span class="smContentB smContentBb">备注：</span>
+          <div class="smContentC smContentCc">
+            <div>支持下拉加载（即：拉到页面底部会加载更多信息）</div>
+          </div>
+        </div>
+      </div>
+    </mt-popup>
   </div>
 </template>
 
@@ -109,6 +143,7 @@ export default {
   },
   data () {
     return {
+      popupVisible: false,
       isShowList: true,
       loading: false,
       dialogaddsort: false,

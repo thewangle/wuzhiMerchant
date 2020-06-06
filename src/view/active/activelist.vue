@@ -5,6 +5,12 @@
       <div class="vanNavBarCenter">活动列表</div>
       <div class="vanNavBarRight"></div>
     </div>
+    <div class="hellpWrap" @click="popupVisible = true">
+      <div class="hellpWrap1">
+        <img src="../../assets/img/hellp.png" alt="" class="hellpImg">
+        <span class="hellpB">使用帮助</span>
+      </div>
+    </div>
     <div class="addSortbtWrap" v-if="isAddActives">
       <el-button style="width:90%;padding:10px 0;" class="filter-item" type="primary" icon="el-icon-edit" @click="adduser()">添加活动</el-button>
     </div>
@@ -77,6 +83,7 @@
         <span class="dialog_sp">活动图片</span>
         <el-upload
           :http-request="handleUpLoadIconImg"
+          :on-preview="handleIconCardPreview"
           :on-remove="handleIconCardicon"
           :limit="1"
           :action="domain"
@@ -90,10 +97,40 @@
         <el-button type="primary" @click="addsortsubmit">确 定</el-button>
       </div>
     </el-dialog>
+    <mt-popup v-model="popupVisible" position="right">
+      <div class="hellpContent">
+        <div class="hellepB" @click="popupVisible = false"><span class="hellepBB">活动列表 - 使用帮助</span><span class="hellepBBB">X</span></div>
+        <div class="hellepDiv smB">概述：此页为活动的添加与编辑页</div>
+        <div class="smContent">
+          <span class="smContentB">添加活动：</span>
+          <div class="smContentC">
+            <div>点击"添加活动"将跳转至活动添加页（超过5个活动将不显示添加活动按钮）</div>
+          </div>
+        </div>
+        <div class="smContent">
+          <span class="smContentB">活动列表：</span>
+          <div class="smContentC">
+            <div>1.展示账号下的所有活动列表</div>
+            <div>2.点击"编辑"会弹出"活动编辑"对话框，对该活动进行编辑</div>
+            <div>3.点击"删除"会弹出"是否删除该活动"提示框，"取消"将不删除该活动，"确定"会永久删除该活动</div>
+          </div>
+        </div>
+        <div class="smContent">
+          <span class="smContentB smContentBb">备注：</span>
+          <div class="smContentC smContentCc">
+            <div>单个账号最多只能创建5个活动，多了需要手动删除不需要的活动</div>
+          </div>
+        </div>
+      </div>
+    </mt-popup>
+    <el-dialog :visible.sync="dialogVisible" :modal-append-to-body='false'>
+      <img :src="dialogImageUrl" width="100%" alt="">
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
 import moment from 'moment' //日期转换插件
 import { getUserid } from '@/utils/cookie'
 import { getallactivesbyid, editeactive, deletactive, getqiniutoken } from '@/api/actives' //请求函数
@@ -109,6 +146,9 @@ export default {
   },
   data () {
     return {
+      dialogVisible: false,//图片预览展示diolog是否显示
+      dialogImageUrl: '',//图片预览展示图片地址
+      popupVisible: false,
       isShowList: true,
       isAddActives: true,
       loading: false,
@@ -139,6 +179,11 @@ export default {
     //自定义上传函数
     handleUpLoadIconImg(req) {
       this._uploadQiNiu(req)//封装的上传七牛云函数
+    },
+    //图片预览放大
+    handleIconCardPreview() {
+      this.dialogImageUrl = this.iconFilelist[0].url
+      this.dialogVisible = true
     },
     //移除图片时的钩子函数
     handleIconCardicon() {
@@ -225,6 +270,7 @@ export default {
             axios.post(self.domain, formData).then(res => {
               const url = self.qiniuAddress + '/' + res.data.key
               self.sorts.imgurl = url
+              self.iconFilelist = [{ name: '活动介绍图', url: url }]
             })
           })
         }
@@ -239,6 +285,7 @@ export default {
           axios.post(self.domain, formData).then(res => {
             const url = self.qiniuAddress + '/' + res.data.key
             self.sorts.imgurl = url
+            self.iconFilelist = [{ name: '活动介绍图', url: url }]
           })
         }
       }

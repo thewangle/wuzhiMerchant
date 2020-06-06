@@ -5,6 +5,12 @@
       <div class="vanNavBarCenter" style="color:black;"></div>
       <div class="vanNavBarRight"></div>
     </div>
+    <div class="hellpWrap" @click="popupVisible = true">
+      <div class="hellpWrap1">
+        <img src="../../assets/img/hellp.png" alt="" class="hellpImg">
+        <span class="hellpB">使用帮助</span>
+      </div>
+    </div>
     <div class="content" style="z-index:0;">
       <div class="logoWrap" style="z-index:1">
         <div class="logoWrap1">
@@ -39,6 +45,28 @@
         </div>
       </div>
     </div>
+    <mt-popup v-model="popupVisible" position="right">
+      <div class="hellpContent">
+        <div class="hellepB" @click="popupVisible = false"><span class="hellepBB">添加供应商 - 使用帮助</span><span class="hellepBBB">X</span></div>
+        <div class="hellepDiv smB">概述：此页为添加供应商功能页</div>
+        <div class="smContent">
+          <span class="smContentB">字段说明：</span>
+          <div class="smContentC">
+            <div>1."供应商名称"：该供应商的名称(必填)</div>
+            <div>2."供应商地址"：该供应商的联系地址(必填)</div>
+            <div>3."联系人"：该供应商的联系人姓名(必填)</div>
+            <div>4."电话"：该供应商的联系电话(必填)</div>
+            <div>5."备注"：该供应商的备注信息(选填)</div>
+          </div>
+        </div>
+        <div class="smContent">
+          <span class="smContentB smContentBb">备注：</span>
+          <div class="smContentC smContentCc">
+            <div>点击"返回"将进入"导航页"</div>
+          </div>
+        </div>
+      </div>
+    </mt-popup>
   </div>
 </template>
 
@@ -56,6 +84,7 @@ export default {
   },
   data () {
     return {
+      popupVisible: false,
       is_login: false,
       logins: '提 交',
       loginForm: {

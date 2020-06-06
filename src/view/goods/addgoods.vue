@@ -1,10 +1,15 @@
 <template>
   <div class="loginWrap">
-    <!-- <div class="goBack" @click="$router.go(-1)">< 返回</div> -->
     <div class="vanNavBar">
       <div class="vanNavBarLeft" @click="$router.go(-1)"><img src="../../assets/img/back.png" alt=""> <span>返回</span></div>
       <div class="vanNavBarCenter" style="color:black;"></div>
       <div class="vanNavBarRight"></div>
+    </div>
+    <div class="hellpWrap" @click="popupVisible1 = true">
+      <div class="hellpWrap1">
+        <img src="../../assets/img/hellp.png" alt="" class="hellpImg">
+        <span class="hellpB" style="color:white;">使用帮助</span>
+      </div>
     </div>
     <div class="content" style="z-index:0;">
       <div class="logoWrap" style="z-index:1">
@@ -92,11 +97,40 @@
       <div class="selectBWrap"><span class="selectBSpan" @click="selectqr1">确定</span></div>
       <mt-picker :slots="suppliers" @change="onValuesChange1" value-key="name"></mt-picker>
     </mt-popup>
+    <mt-popup v-model="popupVisible1" position="right">
+      <div class="hellpContent">
+        <div class="hellepB" @click="popupVisible1 = false"><span class="hellepBB">添加商品页 - 使用帮助</span><span class="hellepBBB">X</span></div>
+        <div class="hellepDiv smB">概述：此页为添加商品功能页</div>
+        <div class="smContent">
+          <span class="smContentB">字段说明：</span>
+          <div class="smContentC">
+            <div>1."商品名称"：该商品的名称</div>
+            <div>2."商品编码"：该商品的编码</div>
+            <div>3."商品分类"：该商品的所属分类(需要在"分类管理"模块添加分类)</div>
+            <div>4."供应商"：该商品的所属供应商(需要在"供应商/添加供应商"模块添加供应商)</div>
+            <div>5."商品规格"：该商品的规格(选填)</div>
+            <div>6."商品数量"：该商品的入库数量</div>
+            <div>7."库存上线"：该商品的库存上线(用于库存预警)</div>
+            <div>8."库存下线"：该商品的库存下线(用于库存预警)</div>
+            <div>9."商品进价"：该商品的进价(单位：元)</div>
+            <div>10."商品售价"：该商品的预售价格(单位：元)</div>
+            <div>10."商品描述"：该商品的描述信息(选填)</div>
+          </div>
+        </div>
+        <div class="smContent">
+          <span class="smContentB smContentBb">备注：</span>
+          <div class="smContentC smContentCc">
+            <div>点击"返回"将进入"导航页"</div>
+          </div>
+        </div>
+      </div>
+    </mt-popup>
   </div>
 </template>
 
 <script>
 import { loginByUsername, getuserinfoByusername} from '@/api/login' //请求函数
+import { changecost } from '@/api/user' //请求函数
 import { getSortinfoall, getSupplierall, addGoods } from '@/api/goods' //获取分类
 import moment from 'moment' //日期转换插件
 import { getpartantId, getRoleId, getUserid } from '@/utils/cookie'
@@ -112,6 +146,7 @@ export default {
   },
   data () {
     return {
+      popupVisible1: false,
       suppliername: '请选择供应商',
       sortname: '请选择商品分类',
       popupVisible: false,
@@ -258,6 +293,14 @@ export default {
             type: 'success',
             center: true
           });
+          let info = {
+            outprice: Number(self.loginForm.inprice) * Number(self.loginForm.nums),
+            numtype: 4,
+            uid: getUserid()
+          }
+          changecost(info).then(res => {
+            let {data} = res
+          })
           self.$router.push({ path: '/goodslist' })
         } else {
           self.$message({

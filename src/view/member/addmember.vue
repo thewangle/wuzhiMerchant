@@ -5,12 +5,18 @@
       <div class="vanNavBarCenter" style="color:black;"></div>
       <div class="vanNavBarRight"></div>
     </div>
+    <div class="hellpWrap" @click="popupVisible = true">
+      <div class="hellpWrap1">
+        <img src="../../assets/img/hellp.png" alt="" class="hellpImg">
+        <span class="hellpB">使用帮助</span>
+      </div>
+    </div>
     <div class="content" style="z-index:0;">
       <div class="logoWrap" style="z-index:1">
         <div class="logoWrap1">
           <img src="../../assets/img/logo.jpg" alt="" class="animated bounceInDown">
           <div class="loginwr"><span class="loginw animated bounceIn" style="font-size:17px;">五 指 大 数 据</span></div>
-          <div class="loginwr" style="margin-top:10px;"><span class="loginw animated bounceIn">添加供应商</span></div>
+          <div class="loginwr" style="margin-top:10px;"><span class="loginw animated bounceIn">添加会员</span></div>
         </div>
       </div>
       <div class="formWrap">
@@ -49,6 +55,28 @@
         </div>
       </div>
     </div>
+    <mt-popup v-model="popupVisible" position="right">
+      <div class="hellpContent">
+        <div class="hellepB" @click="popupVisible = false"><span class="hellepBB">添加会员 - 使用帮助</span><span class="hellepBBB">X</span></div>
+        <div class="hellepDiv smB">概述：此页为添加会员功能页</div>
+        <div class="smContent">
+          <span class="smContentB">字段说明：</span>
+          <div class="smContentC">
+            <div>1."会员姓名"：该会员的名称(必填)</div>
+            <div>2."电话"：该会员的电话(选填)</div>
+            <div>3."会员生日"：该会员的生日(必填)</div>
+            <div>4."会员性别"：该会员的性别(必填)</div>
+            <div>10."会员描述"：该会员的描述信息(选填)</div>
+          </div>
+        </div>
+        <div class="smContent">
+          <span class="smContentB smContentBb">备注：</span>
+          <div class="smContentC smContentCc">
+            <div>点击"返回"将进入"导航页"</div>
+          </div>
+        </div>
+      </div>
+    </mt-popup>
   </div>
 </template>
 
@@ -67,6 +95,7 @@ export default {
   },
   data () {
     return {
+      popupVisible: false,
       birthday: '',
       is_login: false,
       logins: '提 交',

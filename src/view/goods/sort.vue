@@ -5,6 +5,12 @@
       <div class="vanNavBarCenter" style="color:black;">分类列表</div>
       <div class="vanNavBarRight"></div>
     </div>
+    <div class="hellpWrap" @click="popupVisible = true">
+      <div class="hellpWrap1">
+        <img src="../../assets/img/hellp.png" alt="" class="hellpImg">
+        <span class="hellpB">使用帮助</span>
+      </div>
+    </div>
     <div class="sortContentWrpa">
       <div class="subWrap">
         <el-input v-model="listQuery.name" placeholder="请输入分类名称" style="width: 250px;" @keyup.enter.native="handleFilter"/>
@@ -28,7 +34,7 @@
         </div>
       </div>
     </div>
-    <el-dialog :visible.sync="dialogaddsort" title="添加分类" :modal-append-to-body='false'>
+    <el-dialog :visible.sync="dialogaddsort" title="添加分类" :modal-append-to-body='false' @close="tcclose">
       <div class="dialog_div">
         <span class="dialog_sp">分类名称</span>
         <el-input v-model="sorts.name" placeholder="请输入分类名称" autocomplete="off"></el-input>
@@ -47,6 +53,38 @@
         <el-button type="primary" @click="addsortsubmit">确 定</el-button>
       </div>
     </el-dialog>
+    <mt-popup v-model="popupVisible" position="right">
+      <div class="hellpContent">
+        <div class="hellepB" @click="popupVisible = false"><span class="hellepBB">分类列表页 - 使用帮助</span><span class="hellepBBB">X</span></div>
+        <div class="hellepDiv smB">概述：此页为分类的添加与编辑页</div>
+        <div class="smContent">
+          <span class="smContentB">分类添加：</span>
+          <div class="smContentC">
+            <div>1.点击"添加分类"会弹出添加分类对话框</div>
+            <div>2."分类名称"为要添加分类的名称</div>
+            <div>3."备注"为要添加分类的备注描述</div>
+            <div>4.点击"取消"关闭对话框，不会添加分类</div>
+            <div>5.点击"确定"添加新分类</div>
+          </div>
+        </div>
+        <div class="smContent">
+          <span class="smContentB">分类列表：</span>
+          <div class="smContentC">
+            <div>1.展示账号下的所有分类</div>
+            <div>2.点击"编辑"会弹出"分类编辑"对话框，对该分类进行编辑</div>
+            <div>3."分类编辑"时点击"取消"不会提交分类编辑并关闭对话框，点击"确定"提交该分类编辑</div>
+            <div>4.点击"删除"会弹出"是否删除该分类"提示框，"取消"将不删除该分类，"确定"会永久删除该分类</div>
+          </div>
+        </div>
+        <div class="smContent">
+          <span class="smContentB smContentBb">备注：</span>
+          <div class="smContentC smContentCc">
+            <div>1.支持下拉加载（即：拉到页面底部会加载更多信息）</div>
+            <div>2.可以在输入框输入"分类名称"进行精准查询</div>
+          </div>
+        </div>
+      </div>
+    </mt-popup>
   </div>
 </template>
 
@@ -66,6 +104,7 @@ export default {
   },
   data () {
     return {
+      popupVisible: false,
       isShowList: true,
       loading: false,
       dialogaddsort: false,
@@ -89,6 +128,10 @@ export default {
     }
   },
   methods: {
+    //关闭进/售价格更改弹窗回调函数
+    tcclose() {
+      this._fetchActivityList(0) //重新获取数据
+    },
     //添加分类
     addsort(num,index) {
       this.dialogaddsort = true

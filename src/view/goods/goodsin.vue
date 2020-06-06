@@ -5,6 +5,12 @@
       <div class="vanNavBarCenter" style="color:black;">商品入库</div>
       <div class="vanNavBarRight"></div>
     </div>
+    <div class="hellpWrap" @click="popupVisible = true">
+      <div class="hellpWrap1">
+        <img src="../../assets/img/hellp.png" alt="" class="hellpImg">
+        <span class="hellpB">使用帮助</span>
+      </div>
+    </div>
     <div class="sortContentWrpa">
       <div class="subWrapGoodslist">
         <div style="font-size:17px;">条件筛选</div>
@@ -71,16 +77,16 @@
       </div>
     </div>
     <!-- 出售商品 -->
-    <el-dialog :visible.sync="dialogaddsort" title="商品入库" style="width:80%;" :modal-append-to-body='false'>
+    <el-dialog :visible.sync="dialogaddsort" title="商品补货" style="width:80%;" :modal-append-to-body='false'>
       <div class="dialog_div">
         <span class="dialog_sp">补货数量</span>
         <el-input v-model="sorts.changenums" @input="change($event)" placeholder="请输入商品规格" autocomplete="off"></el-input>
       </div>
-      <div class="dialog_div">
+      <div class="dialog_div" @click="changePrice">
         <span class="dialog_sp">商品进价</span>
         <el-input disabled v-model="sorts.inpricenow" placeholder="请输入库存上线" autocomplete="off"></el-input>
       </div>
-      <div class="dialog_div">
+      <div class="dialog_div" @click="changePrice">
         <span class="dialog_sp">商品售价</span>
         <el-input disabled v-model="sorts.outpricenow" placeholder="请输入库存下线" autocomplete="off"></el-input>
       </div>
@@ -95,11 +101,11 @@
         <span class="dialog_sp">退货数量</span>
         <el-input v-model="sorts.changenums" @input="change($event)" placeholder="请输入商品规格" autocomplete="off"></el-input>
       </div>
-      <div class="dialog_div">
+      <div class="dialog_div" @click="changePrice">
         <span class="dialog_sp">商品进价</span>
         <el-input disabled v-model="sorts.inpricenow" placeholder="请输入库存上线" autocomplete="off"></el-input>
       </div>
-      <div class="dialog_div">
+      <div class="dialog_div" @click="changePrice">
         <span class="dialog_sp">商品售价</span>
         <el-input disabled v-model="sorts.outpricenow" placeholder="请输入库存下线" autocomplete="off"></el-input>
       </div>
@@ -108,6 +114,33 @@
         <el-button type="primary" @click="addsortsubmit(1)">确 定</el-button>
       </div>
     </el-dialog>
+    <mt-popup v-model="popupVisible" position="right">
+      <div class="hellpContent">
+        <div class="hellepB" @click="popupVisible = false"><span class="hellepBB">商品入库页 - 使用帮助</span><span class="hellepBBB">X</span></div>
+        <div class="hellepDiv smB">概述：此页为商品的"补货"、"退货"的出库操作</div>
+        <div class="smContent">
+          <span class="smContentB">条件筛选：</span>
+          <div class="smContentC">
+            <div>1.支持按"商品名称"、"商品编码"、"分类"、"供应商"筛选搜索</div>
+            <div>2.默认筛选条件均为空，即展示全部</div>
+          </div>
+        </div>
+        <div class="smContent">
+          <span class="smContentB">商品列表：</span>
+          <div class="smContentC">
+            <div>1.展示账号下的所有商品</div>
+            <div>2.点击"补货"会弹出"商品补货"对话框，对该商品进行补货操作（"商品进价"、"商品售价"不可更改，如需更改请移步"价格调整"页）</div>
+            <div>3.点击"退货"会弹出"退货商品"对话框，对该商品进行退货操作（"商品进价"、"商品售价"不可更改，如需更改请移步"价格调整"页）</div>
+          </div>
+        </div>
+        <div class="smContent">
+          <span class="smContentB smContentBb">备注：</span>
+          <div class="smContentC smContentCc">
+            <div>支持下拉加载（即：拉到页面底部会加载更多信息）</div>
+          </div>
+        </div>
+      </div>
+    </mt-popup>
   </div>
 </template>
 
@@ -115,6 +148,7 @@
 import moment from 'moment' //日期转换插件
 import { getUserid, getRoleId, getpartantId } from '@/utils/cookie'
 import { addSort, getGoodsinfo, editeGoodsinfo, deletegoodsinfo, getSortinfoall, getSupplierall } from '@/api/goods' //请求函数
+import { changecost } from '@/api/user' //请求函数
 import { Indicator } from 'mint-ui'
 
 export default {
@@ -129,6 +163,7 @@ export default {
   },
   data () {
     return {
+      popupVisible: false,
       isShowList: true,
       loading: false,
       dialogaddsort: false,
@@ -192,6 +227,14 @@ export default {
     }
   },
   methods: {
+    //点击更改进/售价
+    changePrice() {
+      this.$notify({
+        title: '提示',
+        message: '请您在"价格更改页"进行价格更改！',
+        type: 'warning'
+      });
+    },
     //解决input不能输入问题
     change() {
       this.$forceUpdate()
@@ -249,6 +292,14 @@ export default {
         return
       }
       this.sorts.type = 2
+      let info = {
+        outprice: Number(this.sorts.outpricenow) * Number(this.sorts.changenums),
+        numtype: this.sorts.numtype,
+        uid: getUserid()
+      }
+      if (this.sorts.numtype == 4) {
+        info.outprice = Number(this.sorts.inpricenow) * Number(this.sorts.changenums)
+      }
       editeGoodsinfo(this.sorts).then(res => {
         if (num == 0) {
           this.dialogaddsort = false
@@ -261,6 +312,11 @@ export default {
           message: res.data.message,
           center: true
         });
+        if (res.data.code == 200) {
+          changecost(info).then(res => {
+            let {data} = res
+          })
+        }
         this.sorts = ''
         this._fetchActivityList(0)
       }).catch(error => {

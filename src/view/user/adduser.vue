@@ -5,6 +5,12 @@
       <div class="vanNavBarCenter" style="color:black;"></div>
       <div class="vanNavBarRight"></div>
     </div>
+    <div class="hellpWrap" @click="popupVisible = true">
+      <div class="hellpWrap1">
+        <img src="../../assets/img/hellp.png" alt="" class="hellpImg">
+        <span class="hellpB">使用帮助</span>
+      </div>
+    </div>
     <div class="content" style="z-index:0;">
       <div class="logoWrap" style="z-index:1">
         <div class="logoWrap1">
@@ -39,6 +45,28 @@
         </div>
       </div>
     </div>
+    <mt-popup v-model="popupVisible" position="right">
+      <div class="hellpContent">
+        <div class="hellepB" @click="popupVisible = false"><span class="hellepBB">添加账号 - 使用帮助</span><span class="hellepBBB">X</span></div>
+        <div class="hellepDiv smB">概述：此页为添加账号功能页</div>
+        <div class="smContent">
+          <span class="smContentB">字段说明：</span>
+          <div class="smContentC">
+            <div>1."用户名"：该账号的用户名，用于登录(必填)</div>
+            <div>2."名称"：该账号的电话，用于经营分析、列表等的展示(必填)</div>
+            <div>3."密码"：该账号的密码，用于登录(必填)</div>
+            <div>4."管理员"：该账号的管理员(必填)</div>
+            <div>5."电话"：该账号的联系电话(必填)</div>
+          </div>
+        </div>
+        <div class="smContent">
+          <span class="smContentB smContentBb">备注：</span>
+          <div class="smContentC smContentCc">
+            <div>"商场级别"的账号可以创建"部门级别"的账号，"部门级别"的账号可以创建"柜组级别"的账号</div>
+          </div>
+        </div>
+      </div>
+    </mt-popup>
   </div>
 </template>
 
@@ -58,6 +86,7 @@ export default {
   },
   data () {
     return {
+      popupVisible: false,
       is_login: false,
       logins: '提 交',
       allusers: [],

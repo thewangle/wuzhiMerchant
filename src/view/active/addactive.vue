@@ -5,6 +5,12 @@
       <div class="vanNavBarCenter"></div>
       <div class="vanNavBarRight"></div>
     </div>
+    <div class="hellpWrap" @click="popupVisible = true">
+      <div class="hellpWrap1">
+        <img src="../../assets/img/hellp.png" alt="" class="hellpImg">
+        <span class="hellpB">使用帮助</span>
+      </div>
+    </div>
     <div class="content" style="z-index:0;">
       <div class="logoWrap" style="z-index:1">
         <div class="logoWrap1">
@@ -73,6 +79,30 @@
     <el-dialog :visible.sync="dialogVisible" :modal-append-to-body='false'>
       <img :src="dialogImageUrl" width="100%" alt="">
     </el-dialog>
+    <mt-popup v-model="popupVisible" position="right">
+      <div class="hellpContent">
+        <div class="hellepB" @click="popupVisible = false"><span class="hellepBB">添加活动 - 使用帮助</span><span class="hellepBBB">X</span></div>
+        <div class="hellepDiv smB">概述：此页为添加活动功能页</div>
+        <div class="smContent">
+          <span class="smContentB">字段说明：</span>
+          <div class="smContentC">
+            <div>1."活动名称"：该活动的活动名称(必填)</div>
+            <div>2."活动区域"：该活动的区域，用于客户端按地域选择展示(必填)</div>
+            <div>3."示例起价"：该活动的示例的起价，展示于主标题下面，单品的示例价格</div>
+            <div>4."示例标签"：该活动的示例的标题，展示于主标题下面，单品的示例标题</div>
+            <div>5."副标题-惠"：该活动的副标题"惠",可以输入优惠活动的简短描述</div>
+            <div>5."副标题-折"：该活动的副标题"折",可以输入打折活动的简短描述</div>
+            <div>5."副标题-促"：该活动的副标题"促",可以输入促销活动的简短描述</div>
+          </div>
+        </div>
+        <div class="smContent">
+          <span class="smContentB smContentBb">备注：</span>
+          <div class="smContentC smContentCc">
+            <div>"商场级别"的账号可以创建"部门级别"的账号，"部门级别"的账号可以创建"柜组级别"的账号</div>
+          </div>
+        </div>
+      </div>
+    </mt-popup>
   </div>
 </template>
 
@@ -93,14 +123,14 @@ export default {
   },
   data () {
     return {
+      popupVisible: false,
       domain: 'http://upload-z2.qiniup.com',//上传到七牛云的地址
       qiniuAddress: 'http://m.wuzhi1688.com', //七牛云仓库绑定的域名
       iconFilelist: [],//上传文件列表
       dialogVisible: false,//图片预览展示diolog是否显示
       dialogImageUrl: '',//图片预览展示图片地址
       activityInfo: { //form表单data
-        imgUrl_1: require('../../assets/img/logo.jpg'),
-        imgUrl_2: '',
+        imgUrl_1: require('../../assets/img/logo.jpg')
       },
       areaList: {
         province_list: {
@@ -173,7 +203,6 @@ export default {
     handleIconCardPreview() {
       this.dialogImageUrl = this.activityInfo.imgUrl_1
       this.dialogVisible = true
-      console.log('图片预览放大')
     },
     //移除图片时的钩子函数
     handleIconCardicon() {
@@ -236,7 +265,6 @@ export default {
       const formData = new FormData() //创建FormData对象，用来以键值对的方式存储form表单data
       formData.append('token', token)
       formData.append('key', keyname)
-      formData.append('file', req.file)
       let self = this
       if(req.file.size/1024 > 1025) { //大于1M，进行压缩上传
         if(req.file.type.indexOf("image/") == -1){ //上传的不是图片
@@ -261,6 +289,7 @@ export default {
             axios.post(self.domain, formData).then(res => {
               const url = self.qiniuAddress + '/' + res.data.key
               self.loginForm.imgurl = url
+              self.activityInfo.imgUrl_1 = url
             })
           })
         }
@@ -273,9 +302,11 @@ export default {
           })
           return
         } else { //上传的是图片
+          formData.append('file', req.file)
           axios.post(self.domain, formData).then(res => {
             const url = self.qiniuAddress + '/' + res.data.key
             self.loginForm.imgurl = url
+            self.activityInfo.imgUrl_1 = url
           })
         }
       }

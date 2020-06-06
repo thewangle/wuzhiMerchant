@@ -5,6 +5,12 @@
       <div class="vanNavBarCenter" style="color:black;">会员列表</div>
       <div class="vanNavBarRight"></div>
     </div>
+    <div class="hellpWrap" @click="popupVisible = true">
+      <div class="hellpWrap1">
+        <img src="../../assets/img/hellp.png" alt="" class="hellpImg">
+        <span class="hellpB">使用帮助</span>
+      </div>
+    </div>
     <div class="sortContentWrpa">
       <div class="subWrapGoodslist">
         <div style="font-size:17px;">条件筛选</div>
@@ -57,7 +63,7 @@
         </div>
       </div>
     </div>
-    <el-dialog :visible.sync="dialogaddsort" title="编辑会员" style="width:80%;" :modal-append-to-body='false'>
+    <el-dialog :visible.sync="dialogaddsort" title="编辑会员" style="width:80%;" :modal-append-to-body='false' @close="tcclose">
       <div class="dialog_div">
         <span class="dialog_sp">会员姓名</span>
         <el-input disabled v-model="sorts.name" placeholder="请输入供应商名称" autocomplete="off"></el-input>
@@ -88,6 +94,34 @@
         <el-button type="primary" @click="addsortsubmit">确 定</el-button>
       </div>
     </el-dialog>
+    <mt-popup v-model="popupVisible" position="right">
+      <div class="hellpContent">
+        <div class="hellepB" @click="popupVisible = false"><span class="hellepBB">会员列表页 - 使用帮助</span><span class="hellepBBB">X</span></div>
+        <div class="hellepDiv smB">概述：此页为会员的展示与编辑页</div>
+        <div class="smContent">
+          <span class="smContentB">条件筛选：</span>
+          <div class="smContentC">
+            <div>1.支持按"会员名称"、"会员手机号"筛选搜索</div>
+            <div>2.默认筛选条件均为空，即展示全部</div>
+          </div>
+        </div>
+        <div class="smContent">
+          <span class="smContentB">列表：</span>
+          <div class="smContentC">
+            <div>1.展示账号下的所有会员</div>
+            <div>2.点击"编辑"会弹出"会员编辑"对话框，对该会员进行编辑（包括"电话"、"会员描述"）</div>
+            <div>3.点击"推送"会弹出推送对话框，填写推送信息，点击"确定"会以短信的方式发送给目标客户（目前正在开发中）</div>
+            <div>4.点击"删除"会弹出"是否删除该会员"提示框，"取消"将不删除该会员，"确定"会永久删除该会员</div>
+          </div>
+        </div>
+        <div class="smContent">
+          <span class="smContentB smContentBb">备注：</span>
+          <div class="smContentC smContentCc">
+            <div>支持下拉加载（即：拉到页面底部会加载更多信息）</div>
+          </div>
+        </div>
+      </div>
+    </mt-popup>
   </div>
 </template>
 
@@ -107,6 +141,7 @@ export default {
   },
   data () {
     return {
+      popupVisible: false,
       isShowList: true,
       loading: false,
       dialogaddsort: false,
@@ -132,6 +167,10 @@ export default {
     }
   },
   methods: {
+    //关闭进/售价格更改弹窗回调函数
+    tcclose() {
+      this._fetchActivityList(0) //重新获取数据
+    },
     //编辑商品
     addsort(index) {
       this.dialogaddsort = true
