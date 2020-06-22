@@ -5,8 +5,16 @@
 </template>
 
 <script>
+import $ from 'jquery'
+
 export default {
   name: 'App',
+  mounted() {
+    $("input").blur(function () {
+       $("html,body").animate({scrollTop: document.documentElement.clientHeight},500);
+       console.log('我触发了')
+    });
+  },
 }
 </script>
 
